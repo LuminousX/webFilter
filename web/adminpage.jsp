@@ -65,10 +65,35 @@
             .button{
                 background: pink;
                 margin-right: 5%;
-               
+
             }
 
         </style>
+
+        <script>
+            function myFunction() {
+                // Declare variables 
+                var input, filter, table, tr, td, i;
+                input = document.getElementById("myInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("tabletr");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+        </script>
+
+
 
 
     </head>
@@ -97,7 +122,7 @@
                         &nbsp;&nbsp;&nbsp;<strong>Vm</strong>&nbsp;
 
                         <select name="select_Vm" onchange="this.form.submit();">
-                            <option value="vm_">Select Vm</option>
+                            <option value="vm_">All Vm</option>
 
                             <%                                try {
                                     Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -265,25 +290,26 @@
 
                         <a href="https://pbs.twimg.com/media/DElblT9UMAAPf3N.jpg">Example</a>
 
-
                         <br><br>
-
 
                     </form>
                     <!-- ################################################################################################ -->     
 
 
-                    &nbsp;&nbsp;&nbsp;upload: 
-                    <form action = "uploadfile" method = "post" enctype = "multipart/form-data">
-                        <input id="file" type = "file" accept=".csv" name = "file" size = "35" />
-
-                        <input class="button" type = "submit" value = "Upload File" />
-
+                    <form action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
+                        &nbsp;&nbsp;&nbsp;upload: 
+                        <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
                     </form> 
+
+
+
+                    Search &nbsp;&nbsp;&nbsp;
+                    <input type = "text" name = "search" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."/>
 
 
                     <br>
                 </div>
+
 
                 <!-- ################################################################################################ -->
 
