@@ -21,7 +21,13 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
+ *
+ *
  *
  * @author Admin
  */
@@ -36,6 +42,7 @@ public class uploadfile extends HttpServlet {
      * web application directory.
      */
     private static final String SAVE_DIR = "uploadFiles";
+    String filenamebase;
 
     /**
      * handles file upload
@@ -59,8 +66,12 @@ public class uploadfile extends HttpServlet {
             fileName = new File(fileName).getName();
             part.write(savePath + File.separator + fileName);
         }
-        String a = "no";
+
         try {
+
+            filenamebase = FilenameUtils.getBaseName(fileName);
+            String strfile = fileSaveDir.toString();
+            String pathfile = strfile.replace('\\', '/');
 
             Class.forName("com.mysql.jdbc.Driver");
             Connection con;
@@ -69,20 +80,17 @@ public class uploadfile extends HttpServlet {
                     "root", "kanomroo");
 
             Statement st = con.createStatement();
-            String filenamebase = FilenameUtils.getBaseName(fileName);
 
-            String strfile = fileSaveDir.toString();
-            String pathfile = strfile.replace('\\', '/');
-
-            String createtable = "create table " + filenamebase + " (Vm varchar(200) primary key, Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(10), Memory varchar(200), NICs varchar(10), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200), Cluster varchar(200) , Host varchar(200));";
+            String createtable = "create table " + filenamebase + " (Vm varchar(200) primary key, Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(10), Memory varchar(200), NICs varchar(10), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200), Cluster varchar(200) , Host varchar(50));";
             String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (Vm, Powerstate, DNS_Name, CPUs, Memory, NICs, Disks, Network_1, Resource_pool, Provisioned_MB, In_Use_MB, Path, Host , Cluster);";
-
-            int n = st.executeUpdate(createtable);
-
+            st.executeUpdate(createtable);
             st.executeUpdate(upload);
-            a = "yes";
 
-           // request.setAttribute("message", "Upload has been done successfully! >>> " + pathfile + "/" + filenamebase + "  " + a);
+            tableDate();
+
+            con.close();
+            st.close();
+            // request.setAttribute("message", "Upload has been done successfully! >>> " + pathfile + "/" + filenamebase + "  " );
             getServletContext().getRequestDispatcher("/adminpage.jsp").forward(
                     request, response);
         } catch (Exception e) {
@@ -104,4 +112,20 @@ public class uploadfile extends HttpServlet {
         }
         return "";
     }
+
+    public void tableDate() throws ClassNotFoundException, SQLException {
+
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection conn;
+
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Date_table",
+                "root", "kanomroo");
+
+        Statement stt = conn.createStatement();
+
+        stt.executeUpdate("Insert into table_date (name,Date) values ('" + filenamebase + "' , now());");
+        conn.close();
+        stt.close();
+    }
+
 }

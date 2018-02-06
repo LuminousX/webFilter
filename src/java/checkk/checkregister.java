@@ -45,8 +45,8 @@ public class checkregister extends HttpServlet {
 
             if (!rs.next()) {
                 // register
-                
-                st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
+              
+            //    st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
 
                 response.sendRedirect("login.jsp");
             } else {

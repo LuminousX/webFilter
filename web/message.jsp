@@ -4,6 +4,10 @@
     Author     : Admin
 --%>
 
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Statement"%>
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.Connection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +16,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-       
-        <h2>${requestScope.message}</h2>
+
+        <%--   <h2>${requestScope.message}</h2> --%>
+   
     </body>
 </html>
