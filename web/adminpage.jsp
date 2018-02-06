@@ -21,11 +21,9 @@
         <link href="css/stylehead.css" rel="stylesheet" type="text/css">
 
         <%
-
             if (session.getAttribute("username") == null) {
                 response.sendRedirect("login.jsp");
             }
-
         %>
 
         <script>
@@ -65,7 +63,6 @@
             .button{
                 background: pink;
                 margin-right: 5%;
-
             }
 
         </style>
@@ -92,8 +89,6 @@
                 }
             }
         </script>
-
-
 
 
     </head>
@@ -162,7 +157,7 @@
                         &nbsp;&nbsp;&nbsp;<strong>Powerstate</strong>&nbsp;
 
                         <select name="select_powerstate" onchange="this.form.submit();">
-                            <option value="powerstate_">Select Powerstate</option>
+                            <option value="powerstate_">All Powerstate</option>
 
                             <%
                                 try {
@@ -205,7 +200,7 @@
 
                         &nbsp;&nbsp;&nbsp;<strong>Host</strong>&nbsp;
                         <select name="select_Host" onchange="this.form.submit();">                        
-                            <option value="host_">Select Host</option>
+                            <option value="host_">All Host</option>
 
                             <%
                                 try {
@@ -303,11 +298,35 @@
 
 
 
+                    <%
+                        try {
+                            Class.forName("com.mysql.jdbc.Driver").newInstance();
+                            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
+                                    "root", "kanomroo");
+                            Statement statement = connection.createStatement();
+
+                            ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
+                            String date;
+                            if (resultset.next()) {
+                                date = resultset.getString("Date");
+                            } else {
+                                date = "...";
+                            }
+                    %>
+
                     Search &nbsp;&nbsp;&nbsp;
                     <input type = "text" name = "search" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."/>
+                    &nbsp;&nbsp;&nbsp; Update at <%=date%>
 
-
+                    <%  resultset.close();
+                            connection.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    %>
                     <br>
+
+
                 </div>
 
 
