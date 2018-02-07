@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,7 +35,6 @@ public class checklogin extends HttpServlet {
         String userid = request.getParameter("uname");
         String pwd = request.getParameter("pass");
 
-     
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con;
@@ -52,18 +52,31 @@ public class checklogin extends HttpServlet {
                     HttpSession session = request.getSession();
                     session.setAttribute("username", userid);
                     response.sendRedirect("mainpage.jsp");
+
                 } else {
                     HttpSession session = request.getSession();
                     session.setAttribute("username", userid);
                     response.sendRedirect("userpage.jsp");
+                   
                 }
             } else {
-                response.sendRedirect("login.jsp");
+
+                //    HttpSession session = request.getSession();
+                //   session.setAttribute("wrong_uname_pass", "1");
+                //   response.sendRedirect("login.jsp");
+                
+                request.setAttribute("errMsg", "username or password are incorrect");
+                RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+                rd.forward(request, response);
+
+                //  request.setAttribute("message", "a");
+                //  getServletContext().getRequestDispatcher("/login.jsp").forward(
+                //          request, response);
+                //   response.sendRedirect("login.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
 
         }
     }
-
 }
