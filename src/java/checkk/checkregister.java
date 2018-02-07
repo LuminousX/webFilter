@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,13 +46,15 @@ public class checkregister extends HttpServlet {
 
             if (!rs.next()) {
                 // register
-              
-            //    st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
+
+                st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
 
                 response.sendRedirect("login.jsp");
             } else {
-
-                response.sendRedirect("regis.jsp");
+                request.setAttribute("errMsg", "username has been taken.");
+                RequestDispatcher rd = request.getRequestDispatcher("/regis.jsp");
+                rd.forward(request, response);
+               // response.sendRedirect("regis.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();

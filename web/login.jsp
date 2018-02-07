@@ -4,6 +4,7 @@
     Author     : PNASOU01
 --%>
 
+<%@page import="checkk.checklogin"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import ="java.sql.*" %>
 
@@ -20,25 +21,43 @@
 
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 
-
-
         <%--
-                <script>
+                 <script>
                     $(document).ready(function () {
                         $("#btnsignup").click(function () {
-                            if ($("#usernamesignup").val() == "yes") {
-                                alert("can register");
-                                return false;
-                            } else {
-                                alert("can't register");
-                                return false;
-                            }
-                        });
-                    });
-                </script>
+                            if ($("#uname").val() != "" && $("#pass").val() != "") {
+
+                       
+                            alert("<%=request.getParameter("uname")%>");
+                            
+                        }
+                });
+            }); 
         --%>
+
+        <style>
+            .color {
+                color: red;
+            }
+        </style>
+
+
     </head>
     <body>
+
+   <%--     <%
+            if (session.getAttribute("wrong_uname_pass") != null) {
+        %>
+        <script>
+            alert("wrong user name or password");            
+        </script>
+        <%
+                session.removeAttribute("wrong_uname_pass");
+            }
+        %>
+--%>
+
+
         <%!String user_id;%>
 
         <section>				
@@ -48,22 +67,23 @@
                 <a class="hiddenanchor" id="tologin"></a>
                 <div id="wrapper">
                     <div id="login" class="animate form">
-                        <form   autocomplete="on" method="post" action="checklogin"> 
+                        <form   autocomplete="on" method="post" action="checklogin" > 
                             <h1>Log in</h1> 
                             <p> 
                                 <label for="username" class="uname" data-icon="u" > Username </label>
                                 <input id="uname" name="uname" required="required" type="text" placeholder="username"/>
 
                             </p>
-                          
+
                             <p> 
                                 <label for="password" class="youpasswd" data-icon="p"> Password </label>
                                 <input id="pass" name="pass" required="required" type="password" placeholder="password" /> 
 
+                                <span style="color:red;">${errMsg}</span>
                             </p>
 
                             <p class="login button"> 
-                                <input type="submit" value="Login"  /> 
+                                <input id="btnsignup" type="submit" value="Login" onclick="clicked()" /> 
                             </p>
                             <p class="change_link">
                                 Register >>> 
@@ -76,26 +96,6 @@
 
             </div>  
         </section>
-
-
-        <script type="text/javascript">
-            var password = document.getElementById("passwordsignup")
-                    , confirm_password = document.getElementById("passwordsignup_confirm");
-            function validatePassword() {
-
-                if (password.value != confirm_password.value) {
-                    confirm_password.setCustomValidity("Passwords Don't Match");
-                } else {
-                    confirm_password.setCustomValidity('');
-                }
-            }
-
-            password.onchange = validatePassword;
-            confirm_password.onkeyup = validatePassword;
-
-
-
-        </script>    
 
     </body>
 </html>

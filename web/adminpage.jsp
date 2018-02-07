@@ -11,7 +11,7 @@
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.Connection" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@ page errorPage="errorpage.jsp" %> 
 
 <!DOCTYPE html>
 <html>
@@ -20,12 +20,13 @@
         <title>Login</title>
         <link href="css/stylehead.css" rel="stylesheet" type="text/css">
 
+
         <%
             if (session.getAttribute("username") == null) {
                 response.sendRedirect("login.jsp");
             }
         %>
-
+        
         <script>
             function downloadCSV(csv, filename) {
                 var csvFile;

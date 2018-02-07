@@ -4,10 +4,7 @@
     Author     : PNASOU01
 --%>
 
-<%@page import="java.sql.ResultSet"%>
-<%@page import="java.sql.DriverManager"%>
-<%@page import="java.sql.Statement"%>
-<%@page import="java.sql.Connection"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -36,7 +33,7 @@
                 <a class="hiddenanchor" id="tologin"></a>
                 <div id="wrapper">
                     <div id="login" class="animate form">
-                        <form   autocomplete="on" method="post" action="checkregister"> 
+                        <form   autocomplete="off" method="post" action="checkregister"> 
                             <h1> Register </h1> 
                             <p> 
                                 <label for="usernamesignup" class="fname" data-icon="u">Your name</label>
@@ -51,6 +48,7 @@
                             <p> 
                                 <label for="usernamesignup" class="uname" data-icon="u">Your username</label>
                                 <input id="usernamesignup" name="usernamesignup" required="required" type="text" placeholder="mysuperusername690"  />
+                                <span style="color:red;">${errMsg}</span>
                             </p>
 
                             <p> 
@@ -82,21 +80,17 @@
                         </form>
                     </div>
 
-
-
-
                 </div>   
 
             </div>  
         </section>
+
+
         <script type="text/javascript">
             var password = document.getElementById("passwordsignup")
                     , confirm_password = document.getElementById("passwordsignup_confirm")
                     , username_check = document.getElementById("usernamesignup");
             function validatePassword() {
-
-
-
                 if (password.value != confirm_password.value) {
                     confirm_password.setCustomValidity("Passwords Don't Match");
                 } else {
@@ -107,12 +101,10 @@
             password.onchange = validatePassword;
             confirm_password.onkeyup = validatePassword;
 
-
-
-
         </script>    
 
-      
+
+
 
     </body>
 </html>
