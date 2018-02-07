@@ -90,6 +90,8 @@ public class uploadfile extends HttpServlet {
 
             con.close();
             st.close();
+           
+            
             // request.setAttribute("message", "Upload has been done successfully! >>> " + pathfile + "/" + filenamebase + "  " );
             getServletContext().getRequestDispatcher("/adminpage.jsp").forward(
                     request, response);
