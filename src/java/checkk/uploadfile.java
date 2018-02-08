@@ -22,8 +22,11 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.PrintWriter;
+import static java.lang.Math.log;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.servlet.RequestDispatcher;
+import org.apache.jasper.tagplugins.jstl.core.Out;
 
 /**
  *
@@ -43,6 +46,8 @@ public class uploadfile extends HttpServlet {
      */
     private static final String SAVE_DIR = "uploadFiles";
     String filenamebase;
+    String fileName;
+    String pathfile;
 
     /**
      * handles file upload
@@ -59,7 +64,7 @@ public class uploadfile extends HttpServlet {
         if (!fileSaveDir.exists()) {
             fileSaveDir.mkdir();
         }
-        String fileName = "";
+        fileName = "";
         for (Part part : request.getParts()) {
             fileName = extractFileName(part);
             // refines the fileName in case it is an absolute path
@@ -71,7 +76,7 @@ public class uploadfile extends HttpServlet {
 
             filenamebase = FilenameUtils.getBaseName(fileName);
             String strfile = fileSaveDir.toString();
-            String pathfile = strfile.replace('\\', '/');
+            pathfile = strfile.replace('\\', '/');
 
             Class.forName("com.mysql.jdbc.Driver");
             Connection con;
@@ -81,29 +86,36 @@ public class uploadfile extends HttpServlet {
 
             Statement st = con.createStatement();
 
-            String createtable = "create table " + filenamebase + " (Vm varchar(200) primary key, Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(10), Memory varchar(200), NICs varchar(10), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200), Cluster varchar(200) , Host varchar(50));";
-            String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (Vm, Powerstate, DNS_Name, CPUs, Memory, NICs, Disks, Network_1, Resource_pool, Provisioned_MB, In_Use_MB, Path, Host , Cluster);";
-            st.executeUpdate(createtable);
-            st.executeUpdate(upload);
+            if (getExtension(fileName).equals("csv")) {
+                if (checkImportFileDuplicate() == true) {
+                    // replace table
+                    request.setAttribute("err", "update successfull");
+                    RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
+                    rd.forward(request, response);
+                } else {
+                    // create table                    
+                    request.setAttribute("err", "upload successfull");
+                    RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
+                    rd.forward(request, response);
+                }
+            } else {
+                request.setAttribute("err", "upload failed");
+                RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
+                rd.forward(request, response);
+            }
 
-            tableDate();
-
+            checktableDate();
             con.close();
             st.close();
-           
-            
+
             // request.setAttribute("message", "Upload has been done successfully! >>> " + pathfile + "/" + filenamebase + "  " );
             getServletContext().getRequestDispatcher("/adminpage.jsp").forward(
                     request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    /**
-     * Extracts file name from HTTP header content-disposition
-     */
     private String extractFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] items = contentDisp.split(";");
@@ -115,19 +127,77 @@ public class uploadfile extends HttpServlet {
         return "";
     }
 
-    public void tableDate() throws ClassNotFoundException, SQLException {
+    public void checktableDate() throws ClassNotFoundException, SQLException {
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection conn;
+        Connection con;
 
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Date_table",
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Date_table",
                 "root", "kanomroo");
 
-        Statement stt = conn.createStatement();
+        Statement st = con.createStatement();
 
-        stt.executeUpdate("Insert into table_date (name,Date) values ('" + filenamebase + "' , now());");
-        conn.close();
-        stt.close();
+        ResultSet rs = st.executeQuery("select * from table_date where name='" + filenamebase + "'");
+        if (rs.next()) {
+            // replace table
+            st.executeUpdate("delete from table_date where name='" + filenamebase + "'");
+            st.executeUpdate("Insert into table_date (name,Date) values ('" + filenamebase + "' , now());");
+        } else {
+            st.executeUpdate("Insert into table_date (name,Date) values ('" + filenamebase + "' , now());");
+        }
+
+        con.close();
+        st.close();
+    }
+
+    public String getExtension(String f) {
+        String ext = null;
+        int i = f.lastIndexOf('.');
+
+        if (i > 0 && i < f.length() - 1) {
+            ext = f.substring(i + 1).toLowerCase();
+        }
+        return ext;
+    }
+
+    public Boolean checkImportFileDuplicate() throws ClassNotFoundException, SQLException {
+        boolean checkDuplicate = false;
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con;
+
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
+                "root", "kanomroo");
+
+        Statement st = con.createStatement();
+
+        ResultSet rs = st.executeQuery("show tables where tables_in_svcsbia1='" + filenamebase + "'");
+
+        if (rs.next()) {
+            // replace table
+
+            String dropTable = "drop table " + filenamebase;
+            st.executeUpdate(dropTable);
+
+            String createtable = "create table " + filenamebase + " (Vm varchar(200) primary key, Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(10), Memory varchar(200), NICs varchar(10), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200), Cluster varchar(200) , Host varchar(50));";
+            String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (Vm, Powerstate, DNS_Name, CPUs, Memory, NICs, Disks, Network_1, Resource_pool, Provisioned_MB, In_Use_MB, Path, Host , Cluster);";
+            st.executeUpdate(createtable);
+            st.executeUpdate(upload);
+
+            checkDuplicate = true;
+        } else {
+            // create table
+
+            String createtable = "create table " + filenamebase + " (Vm varchar(200) primary key, Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(10), Memory varchar(200), NICs varchar(10), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200), Cluster varchar(200) , Host varchar(50));";
+            String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (Vm, Powerstate, DNS_Name, CPUs, Memory, NICs, Disks, Network_1, Resource_pool, Provisioned_MB, In_Use_MB, Path, Host , Cluster);";
+            st.executeUpdate(createtable);
+            st.executeUpdate(upload);
+
+            checkDuplicate = false;
+        }
+        con.close();
+        st.close();
+
+        return checkDuplicate;
     }
 
 }

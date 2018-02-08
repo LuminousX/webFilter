@@ -51,7 +51,7 @@ public class checklogin extends HttpServlet {
                 if (userid.equals("admin") && pwd.equals("password")) {
                     HttpSession session = request.getSession();
                     session.setAttribute("username", userid);
-                    response.sendRedirect("mainpage.jsp");
+                    response.sendRedirect("adminpage.jsp");
 
                 } else {
                     HttpSession session = request.getSession();

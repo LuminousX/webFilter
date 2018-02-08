@@ -27,6 +27,11 @@
         <%--   <h2>${requestScope.message}</h2> 
 
         --%>
+        
+        
+        <script>
+            alert("mind");
+        </script>
      
 
     </body>
