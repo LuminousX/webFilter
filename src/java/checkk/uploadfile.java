@@ -140,7 +140,7 @@ public class uploadfile extends HttpServlet {
         ResultSet rs = st.executeQuery("select * from table_date where name='" + filenamebase + "'");
         if (rs.next()) {
             // replace data
-            st.executeUpdate("update table_date set Date='now()' where name='" + filenamebase + "';");
+            st.executeUpdate("update table_date set Date=now() where name='" + filenamebase + "';");
         } else {
             // create data
             st.executeUpdate("Insert into table_date (name,Date) values ('" + filenamebase + "' , now());");

@@ -27,12 +27,54 @@
         <%--   <h2>${requestScope.message}</h2> 
 
         --%>
-        
-        
-        <script>
-            alert("mind");
-        </script>
+
+
      
+
+        <div id="mydiv">
+            content
+        </div>
+        <input type="button" id="element" value="test" />
+        <div id="result">
+        </div>
+
+
+
+        <script>
+            function save_on_local_storage() {
+
+        // Check browser support
+                if (typeof (Storage) != "undefined") {
+                    // Store
+                    localStorage.setItem("olddiv", $('div').html());
+                } else {
+                    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+                }
+
+            }
+
+            function get_local_storage() {
+
+        // Check browser support
+                if (typeof (Storage) != "undefined") {
+
+                    // Retrieve
+                    document.getElementById("result").innerHTML = localStorage.getItem("olddiv");
+                } else {
+                    document.getElementById("mydiv").innerHTML = "Sorry, your browser does not support Web Storage...";
+                }
+
+            }
+
+
+            $('#element').click(function () {
+                save_on_local_storage();
+                $('#mydiv').html('Hi There');
+            });
+
+            get_local_storage();
+        </script>
+
 
     </body>
 </html>

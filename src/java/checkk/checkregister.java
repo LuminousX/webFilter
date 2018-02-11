@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "checkregister", urlPatterns = {"/checkregister"})
 public class checkregister extends HttpServlet {
 
+    String email;
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -33,7 +36,7 @@ public class checkregister extends HttpServlet {
             String pwd = request.getParameter("passwordsignup");
             String fname = request.getParameter("namesignup");
             String lname = request.getParameter("surnamesignup");
-            String email = request.getParameter("emailsignup");
+            email = request.getParameter("emailsignup");
             String re_pwd = request.getParameter("passwordsignup_confirm");
 
             Class.forName("com.mysql.jdbc.Driver");
@@ -46,19 +49,64 @@ public class checkregister extends HttpServlet {
 
             if (!rs.next()) {
                 // register
+                if (pwd.length() < 6) {
+                    // password at lease 6
+                    if (pwd.equals(re_pwd)) {
+                        // password not same confirm password
+                        if (checkemail() == true) {
+                            //email duplicate
+                            st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
+                            response.sendRedirect("regissuccessful.jsp");
+                        } else {
+                            request.setAttribute("errMail", "email has been taken.");
+                            RequestDispatcher rd = request.getRequestDispatcher("/regis.jsp");
+                            rd.forward(request, response);
+                        }
+                    } else {
+                        request.setAttribute("errConfirmpassword", "password don't match.");
+                        RequestDispatcher rd = request.getRequestDispatcher("/regis.jsp");
+                        rd.forward(request, response);
+                    }
+                } else {
+                    request.setAttribute("errPassword", "character should more than 6.");
+                    RequestDispatcher rd = request.getRequestDispatcher("/regis.jsp");
+                    rd.forward(request, response);
+                }
 
-                st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
-
-                response.sendRedirect("login.jsp");
             } else {
                 request.setAttribute("errMsg", "username has been taken.");
                 RequestDispatcher rd = request.getRequestDispatcher("/regis.jsp");
                 rd.forward(request, response);
-               // response.sendRedirect("regis.jsp");
+                // response.sendRedirect("regis.jsp");
             }
+
+            con.close();
+            st.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkemail() throws ClassNotFoundException, SQLException {
+        boolean check = false;
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login_DB",
+                "root", "kanomroo");
+        Statement st = con.createStatement();
+        //ResultSet rs;
+
+        ResultSet rs = st.executeQuery("SELECT * from login where e_mail='" + email + "'");
+
+        if (rs.next()) {
+            // duplicate
+            check = false;
+        } else {
+            //not duplicate
+            check = true;
+        }
+        con.close();
+        st.close();
+        return check;
     }
 
 }

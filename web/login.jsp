@@ -21,6 +21,17 @@
 
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 
+
+        <%
+            response.setHeader("Cache-Control", "no-cache, no-store, must=revalidate"); // HTTP 1.1
+            response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+            response.setHeader("Expires", "0"); // Proxies
+
+
+        %>
+
+
+
         <%--
                  <script>
                     $(document).ready(function () {
@@ -45,17 +56,17 @@
     </head>
     <body>
 
-   <%--     <%
-            if (session.getAttribute("wrong_uname_pass") != null) {
-        %>
-        <script>
-            alert("wrong user name or password");            
-        </script>
-        <%
-                session.removeAttribute("wrong_uname_pass");
-            }
-        %>
---%>
+        <%--     <%
+                 if (session.getAttribute("wrong_uname_pass") != null) {
+             %>
+             <script>
+                 alert("wrong user name or password");            
+             </script>
+             <%
+                     session.removeAttribute("wrong_uname_pass");
+                 }
+             %>
+        --%>
 
 
         <%!String user_id;%>
@@ -71,7 +82,7 @@
                             <h1>Log in</h1> 
                             <p> 
                                 <label for="username" class="uname" data-icon="u" > Username </label>
-                                <input id="uname" name="uname" required="required" type="text" placeholder="username"/>
+                                <input  id="uname" name="uname" required="required" type="text" placeholder="username"/>
 
                             </p>
 
