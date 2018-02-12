@@ -85,23 +85,39 @@ public class uploadfile extends HttpServlet {
                     "root", "kanomroo");
 
             Statement st = con.createStatement();
-
+            PrintWriter out = response.getWriter();
             if (getExtension(fileName).equals("csv")) {
                 if (checkImportFileDuplicate() == true) {
                     // replace table
-                    request.setAttribute("err", "update successfull");
-                    RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
-                    rd.forward(request, response);
+
+                    // request.setAttribute("err", "update successful");
+                    //  RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
+                    //  rd.forward(request, response);
+                    
+                    out.println("<script type=\"text/javascript\">");
+                    out.println("alert('update successful');");
+                    out.println("location='adminpage.jsp';");
+                    out.println("</script>");
                 } else {
                     // create table                    
-                    request.setAttribute("err", "upload successfull");
-                    RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
-                    rd.forward(request, response);
+                    //   request.setAttribute("err", "upload successfull");
+                    //  RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
+                    //  rd.forward(request, response);
+
+                    out.println("<script type=\"text/javascript\">");
+                    out.println("alert('upload successful');");
+                    out.println("location='adminpage.jsp';");
+                    out.println("</script>");
                 }
             } else {
-                request.setAttribute("err", "upload failed");
-                RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
-                rd.forward(request, response);
+                // request.setAttribute("err", "upload failed");
+                // RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
+                // rd.forward(request, response);
+
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('upload failed');");
+                out.println("location='adminpage.jsp';");
+                out.println("</script>");
             }
 
             checktableDate();
@@ -109,8 +125,8 @@ public class uploadfile extends HttpServlet {
             st.close();
 
             // request.setAttribute("message", "Upload has been done successfully! >>> " + pathfile + "/" + filenamebase + "  " );
-            getServletContext().getRequestDispatcher("/adminpage.jsp").forward(
-                    request, response);
+            // getServletContext().getRequestDispatcher("/adminpage.jsp").forward(
+            //        request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

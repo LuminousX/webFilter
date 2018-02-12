@@ -49,11 +49,11 @@ public class checkregister extends HttpServlet {
 
             if (!rs.next()) {
                 // register
-                if (pwd.length() < 6) {
+                if (pwd.length() > 5) {
                     // password at lease 6
                     if (pwd.equals(re_pwd)) {
                         // password not same confirm password
-                        if (checkemail() == true) {
+                        if (checkemail()) {
                             //email duplicate
                             st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
                             response.sendRedirect("regissuccessful.jsp");
@@ -93,8 +93,7 @@ public class checkregister extends HttpServlet {
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login_DB",
                 "root", "kanomroo");
         Statement st = con.createStatement();
-        //ResultSet rs;
-
+    
         ResultSet rs = st.executeQuery("SELECT * from login where e_mail='" + email + "'");
 
         if (rs.next()) {

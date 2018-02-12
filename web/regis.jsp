@@ -10,7 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Register</title>
 
 
         <link rel="shortcut icon" href="../favicon.ico"> 
@@ -20,13 +20,56 @@
 
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 
-        <%
+        <%--  <%
             response.setHeader("Cache-Control", "no-cache, no-store, must=revalidate"); // HTTP 1.1
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0
             response.setHeader("Expires", "0"); // Proxies
 
 
-        %>
+        %>  --%>
+
+
+
+        <script>
+            // Run on page load
+            window.onload = function () {
+
+                // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
+                if (sessionStorage.getItem('name') == "name") {
+                    return;
+                }
+
+                // If values are not blank, restore them to the fields
+                var name = sessionStorage.getItem('name');
+                if (name !== null)
+                    $('#namesignup').val(name);
+                sessionStorage.removeItem('name');
+
+                var lastname = sessionStorage.getItem('lastname');
+                if (lastname !== null)
+                    $('#surnamesignup').val(lastname);
+                sessionStorage.removeItem('lastname');
+
+                var username = sessionStorage.getItem('username');
+                if (username !== null)
+                    $('#usernamesignup').val(username);
+                sessionStorage.removeItem('username');
+
+                var email = sessionStorage.getItem('email');
+                if (email !== null)
+                    $('#emailsignup').val(email);
+                sessionStorage.removeItem('email');
+            }
+
+            // Before refreshing the page, save the form data to sessionStorage
+            window.onbeforeunload = function () {
+                sessionStorage.setItem("name", $('#namesignup').val());
+                sessionStorage.setItem("lastname", $('#surnamesignup').val());
+                sessionStorage.setItem("username", $('#usernamesignup').val());
+                sessionStorage.setItem("email", $('#emailsignup').val());
+            }
+        </script>
+
 
 
     </head>
@@ -72,7 +115,7 @@
                             <p> 
                                 <label for="emailsignup" class="youmail" data-icon="e" > Your Email</label>
                                 <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder="email@hotmail.com"/> 
-                                <span style="color:red;">${errEmail}</span>
+                                <span style="color:red;">${errMail}</span>
                             </p>
 
                             <p class="signin button"> 
@@ -93,24 +136,22 @@
         </section>
 
 
-     <%--   <script type="text/javascript">
-            var password = document.getElementById("passwordsignup")
-                    , confirm_password = document.getElementById("passwordsignup_confirm")
-                    , username_check = document.getElementById("usernamesignup");
-            function validatePassword() {
-                if (password.value != confirm_password.value) {
-                    confirm_password.setCustomValidity("Passwords Don't Match");
-                } else {
-                    confirm_password.setCustomValidity('');
-                }
-            }
+        <%--   <script type="text/javascript">
+               var password = document.getElementById("passwordsignup")
+                       , confirm_password = document.getElementById("passwordsignup_confirm")
+                       , username_check = document.getElementById("usernamesignup");
+               function validatePassword() {
+                   if (password.value != confirm_password.value) {
+                       confirm_password.setCustomValidity("Passwords Don't Match");
+                   } else {
+                       confirm_password.setCustomValidity('');
+                   }
+               }
 
             password.onchange = validatePassword;
             confirm_password.onkeyup = validatePassword;
 
         </script>    --%>
-
-
 
 
     </body>

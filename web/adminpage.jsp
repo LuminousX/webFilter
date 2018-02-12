@@ -17,18 +17,15 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login</title>
+        <title>Filter</title>
         <link href="css/stylehead.css" rel="stylesheet" type="text/css">
 
 
         <%
-            response.setHeader("Cache-Control", "no-cache, no-store, must=revalidate"); // HTTP 1.1
-            response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-            response.setHeader("Expires", "0"); // Proxies
-
             if (session.getAttribute("username") == null) {
                 response.sendRedirect("login.jsp");
             }
+
         %>
 
 
@@ -87,7 +84,9 @@
                 }
             }
         }
+        
     </script>
+
 
 
 </head>
@@ -281,14 +280,14 @@
 
                     </select>
 
-                    <a href="https://pbs.twimg.com/media/DElblT9UMAAPf3N.jpg">Example</a>
+                    <%--   <a href="https://pbs.twimg.com/media/DElblT9UMAAPf3N.jpg">Example</a> --%>
 
                     <br><br>
 
                 </form>
                 <!-- ################################################################################################ -->     
 
-                <button id="btn" type="submit"  onclick="exportTableToCSV('<%out.print(request.getParameter("select_table"));%>.csv')"  style="float: right" ><img src="images/aye.jpg" width="30px" height= "30px"></button>
+                <button id="btn" type="submit"  onclick="exportTableToCSV('<%out.print(request.getParameter("select_table"));%>.csv')"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>
                 <form action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
                     &nbsp;&nbsp;&nbsp;upload: 
                     <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>

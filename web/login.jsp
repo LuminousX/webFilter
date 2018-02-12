@@ -22,14 +22,39 @@
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 
 
-        <%
+     <%--   <%
             response.setHeader("Cache-Control", "no-cache, no-store, must=revalidate"); // HTTP 1.1
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0
             response.setHeader("Expires", "0"); // Proxies
 
 
-        %>
+        %>   --%>
 
+
+        <script>
+            // Run on page load
+            window.onload = function () {
+
+                // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
+                if (sessionStorage.getItem('name') == "name") {
+                    return;
+                }
+
+                // If values are not blank, restore them to the fields
+                var username = sessionStorage.getItem('username');
+                if (username !== null)
+                    $('#uname').val(username);
+                sessionStorage.removeItem('username');
+
+
+            }
+
+            // Before refreshing the page, save the form data to sessionStorage
+            window.onbeforeunload = function () {
+                sessionStorage.setItem("username", $('#uname').val());
+            }
+
+        </script>
 
 
         <%--

@@ -46,7 +46,7 @@ public class checklogin extends HttpServlet {
             ResultSet rs;
 
             rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "'");
-
+           
             if (rs.next()) {
                 if (userid.equals("admin") && pwd.equals("password")) {
                     HttpSession session = request.getSession();
@@ -57,7 +57,7 @@ public class checklogin extends HttpServlet {
                     HttpSession session = request.getSession();
                     session.setAttribute("username", userid);
                     response.sendRedirect("userpage.jsp");
-                   
+
                 }
             } else {
 
@@ -65,10 +65,11 @@ public class checklogin extends HttpServlet {
                 //   session.setAttribute("wrong_uname_pass", "1");
                 //   response.sendRedirect("login.jsp");
                 
-                request.setAttribute("errMsg", "username or password are incorrect");
-                RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
-                rd.forward(request, response);
-
+                  request.setAttribute("errMsg", "username or password are incorrect");
+                  RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+                  rd.forward(request, response);              
+           
+                  
                 //  request.setAttribute("message", "a");
                 //  getServletContext().getRequestDispatcher("/login.jsp").forward(
                 //          request, response);
