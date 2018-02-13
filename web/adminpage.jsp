@@ -84,18 +84,23 @@
                 }
             }
         }
-        
+
     </script>
 
+    <style>
+        .styleform{
+            resize: none;
+        }
 
+    </style>
 
 </head>
-<body style="background: #90CAF9">
+<body style="background: #E0F2F1">
     <header > 
         <a href="mainpage.jsp" class="active">Home</a>
         <nav> 
             <ul>
-                <li><a href="adminpage.jsp">Filter</a></li> 
+                 
                 <li><a href="checklogout">Log Out</a></li>
             </ul>
         </nav>
@@ -108,8 +113,8 @@
 
     <section>
         <div>
-            <div>
-                <form class="mind" action="adminpage.jsp" method="post">
+            <div class="styleform">
+                <form action="adminpage.jsp" method="post">
 
                     &nbsp;&nbsp;&nbsp;<strong>Vm</strong>&nbsp;
 
@@ -314,7 +319,7 @@
 
                 &nbsp;&nbsp;&nbsp; Search &nbsp;
                 <input type = "text" name = "search" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."/>
-                &nbsp;&nbsp;&nbsp; Update at <%=date%>
+                &nbsp;&nbsp;&nbsp; Update at <%=date%> 
 
                 <%  resultset.close();
                         connection.close();
@@ -335,15 +340,15 @@
                 <tr>
                     <th width="90">VM</th>
                     <th width="90">Powerstate</th>
-                    <th width="90">DNS_Name</th>
+                    <th width="90">DNS Name</th>
                     <th width="50">CPUs</th>
                     <th width="50">Memory</th>
                     <th width="50">NICs</th>
                     <th width="50">Disks</th>
-                    <th width="90">Network_1</th>
-                    <th width="90">Resource_pool</th>
-                    <th width="90">Provisioned_MB</th>
-                    <th width="90">In_Use_MB</th>
+                    <th width="90">Network 1</th>
+                    <th width="90">Resource pool</th>
+                    <th width="90">Provisioned MB</th>
+                    <th width="90">In Use MB</th>
                     <th width="90">Path</th>
                     <th width="150">Cluster</th>
                     <th width="90">Host</th>
