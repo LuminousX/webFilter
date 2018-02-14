@@ -41,7 +41,7 @@
                 }
 
                 // If values are not blank, restore them to the fields
-                var username = sessionStorage.getItem('username');
+                var username = sessionStorage.getItem('uname');
                 if (username !== null)
                     $('#uname').val(username);
                 sessionStorage.removeItem('username');
@@ -54,7 +54,7 @@
                 sessionStorage.setItem("username", $('#uname').val());
             }
 
-        </script>
+        </script>   
 
 
         <%--

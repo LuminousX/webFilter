@@ -71,7 +71,6 @@
         </script>
 
 
-
     </head>
     <body>
 
@@ -82,7 +81,7 @@
                 <a class="hiddenanchor" id="tologin"></a>
                 <div id="wrapper">
                     <div id="login" class="animate form">
-                        <form   autocomplete="on" method="post" action="checkregister"> 
+                        <form   autocomplete="off" method="post" action="checkregister"> 
                             <h1> Register </h1> 
                             <p> 
                                 <label for="usernamesignup" class="fname" data-icon="u">Your Name</label>
