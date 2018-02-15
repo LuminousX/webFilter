@@ -20,6 +20,7 @@
         <title>Filter</title>
         <link href="css/stylehead.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery.table2excel.js"></script>
 
         <%
             if (session.getAttribute("username") == null) {
@@ -27,6 +28,9 @@
             }
 
         %>
+
+        <%!String text;%>
+
 
 
         <script>
@@ -61,12 +65,9 @@
             }
         </script>
 
-
-     
-
-
         <script>
             function myFunction() {
+
                 // Declare variables 
                 var input, filter, table, tr, td, i;
                 input = document.getElementById("myInput");
@@ -84,7 +85,6 @@
                         } else {
                             tr[i].style.display = "none";
                         }
-
                     }
                 }
             }
@@ -97,14 +97,10 @@
 
                 // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
 
-
-
                 var search = sessionStorage.getItem('search');
                 if (search !== null)
                     $('#myInput').val(search);
                 sessionStorage.removeItem('search');
-
-
 
             }
 
@@ -117,15 +113,32 @@
             }
         </script>
 
-
-
-
         <style>
             .styleform{
                 resize: none;
             }
 
         </style>
+
+
+        <script>
+            $(function () {
+                $("#btn").click(function () {
+                    $(".responstable").table2excel({
+                        exclude: ".noExl",
+                        name: "Excel Document Name",
+                        filename: "file_name",
+                        fileext: ".xls",
+                        exclude_img: true,
+                        exclude_links: true,
+                        exclude_inputs: true
+                    });
+                });
+
+            });
+        </script> 
+
+
 
     </head>
     <body style="background: #E0F2F1">
@@ -223,6 +236,7 @@
                                     }
                                     rs.close();
                                     con.close();
+                                    text = request.getParameter("myInput");
                                 } catch (Exception e) {
 
                                     e.printStackTrace();
@@ -269,6 +283,7 @@
                                     }
                                     rss.close();
                                     conn.close();
+                                    text = request.getParameter("myInput");
                                 } catch (Exception e) {
 
                                     e.printStackTrace();
@@ -322,45 +337,46 @@
 
                         <br><br>
 
+                        <%
+                            try {
+                                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
+                                        "root", "kanomroo");
+                                Statement statement = connection.createStatement();
+
+                                ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
+                                String date;
+                                if (resultset.next()) {
+                                    date = resultset.getString("Date");
+                                } else {
+                                    date = "...";
+                                }
+                        %>
+
+                        &nbsp;&nbsp;&nbsp; Search &nbsp;
+                        <input autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder="Search for Vm.."/>
+                        &nbsp;&nbsp;&nbsp; Update at <%=date%> 
+
+                        <%  resultset.close();
+                                connection.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        %>
+
+
                     </form>
                     <!-- ################################################################################################ -->     
+                    <%--  <button id="btn" type="submit"  onclick="exportTableToCSV('<%out.print(request.getParameter("select_table"));%>.csv')"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button> --%>
+                    
+                    <button id="btn" type="submit"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>
 
-                    <button id="btn" type="submit"  onclick="exportTableToCSV('<%out.print(request.getParameter("select_table"));%>.csv')"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>
-                   
                     <form action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
                         &nbsp;&nbsp;&nbsp;upload: 
                         <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
                         <span style="color:red;">${err}</span>
                     </form> 
 
-
-
-                    <%
-                        try {
-                            Class.forName("com.mysql.jdbc.Driver").newInstance();
-                            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
-                                    "root", "kanomroo");
-                            Statement statement = connection.createStatement();
-
-                            ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
-                            String date;
-                            if (resultset.next()) {
-                                date = resultset.getString("Date");
-                            } else {
-                                date = "...";
-                            }
-                    %>
-
-                    &nbsp;&nbsp;&nbsp; Search &nbsp;
-                    <input type = "text" name = "myInput" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."/>
-                    &nbsp;&nbsp;&nbsp; Update at <%=date%> 
-
-                    <%  resultset.close();
-                            connection.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    %>
 
                     <br>
 
@@ -371,20 +387,20 @@
 
                 <table id="tabletr" class="responstable" width="100%">
                     <tr>
-                        <th width="90">VM</th>
+                        <th width="150">VM</th>
                         <th width="90">Powerstate</th>
-                        <th width="90">DNS_Name</th>
-                        <th width="50">CPUs</th>
-                        <th width="50">Memory</th>
-                        <th width="50">NICs</th>
-                        <th width="50">Disks</th>
-                        <th width="90">Network_1</th>
-                        <th width="90">Resource_pool</th>
-                        <th width="90">Provisioned_MB</th>
+                        <th width="150">DNS_Name</th>
+                        <th width="90">CPUs</th>
+                        <th width="90">Memory</th>
+                        <th width="90">NICs</th>
+                        <th width="90">Disks</th>
+                        <th width="100">Network_1</th>
+                        <th width="150">Resource_pool</th>
+                        <th width="150">Provisioned_MB</th>
                         <th width="90">In_Use_MB</th>
-                        <th width="90">Path</th>
-                        <th width="90">Cluster</th>
-                        <th width="90">Host</th>
+                        <th width="150">Path</th>
+                        <th width="150">Cluster</th>
+                        <th width="150">Host</th>
 
                     </tr>
 
@@ -394,8 +410,61 @@
                                     "root", "kanomroo");
                             Statement st = con.createStatement();
                             ResultSet rs;
+                          
+                            if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //TTTT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                            }else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                                //TTTF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
+                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //TTFT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                            }  else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                                //TTFF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "'");
+                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //TFTT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                                //TFTF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "'");
+                            }  else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //TFFT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                                //TFFF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "'");
+                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //FTTT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                            }else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                                //FTTF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
+                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //FTFT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                            }else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                                //FTFF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "'");
+                            }else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //FFTT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                            }else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                                //FFTF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "'");
+                            }else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                                //FFFT
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm like '%" + request.getParameter("myInput") + "%'");
+                            } else {
+                                //FFFF
+                                rs = st.executeQuery("select * from " + request.getParameter("select_table"));
+                            }
+                            
+                            
+                           
 
-                            if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
+                        /*    if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "'");
                             } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "'");
@@ -403,7 +472,7 @@
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "'");
                             } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_")) {
+                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
                             } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_")) {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "'");
@@ -411,8 +480,7 @@
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
                             } else {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table"));
-                            }
-
+                            } */
                             while (rs.next()) {
 
                     %>
