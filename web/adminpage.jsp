@@ -12,7 +12,7 @@
 <%@ page import="java.sql.Connection" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page errorPage="errorpage.jsp" %> 
-
+<%@page import="checkk.droptable"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,7 +26,7 @@
             if (session.getAttribute("username") == null) {
                 response.sendRedirect("login.jsp");
             }
-
+            session.setAttribute("table", request.getParameter("select_table"));
         %>
 
         <%!String text;%>
@@ -37,28 +37,22 @@
             function downloadCSV(csv, filename) {
                 var csvFile;
                 var downloadLink;
-
                 csvFile = new Blob([csv], {type: "text/csv"});
-
                 downloadLink = document.createElement("a");
                 downloadLink.download = filename;
                 downloadLink.href = window.URL.createObjectURL(csvFile);
                 downloadLink.style.display = "none";
-
                 document.body.appendChild(downloadLink);
-
                 downloadLink.click();
             }
 
             function exportTableToCSV(filename) {
                 var csv = [];
                 var rows = document.querySelectorAll("table tr");
-
                 for (var i = 0; i < rows.length; i++) {
                     var row = [], cols = rows[i].querySelectorAll("td, th");
                     for (var j = 0; j < cols.length; j++)
                         row.push(cols[j].innerText);
-
                     csv.push(row.join(","));
                 }
                 downloadCSV(csv.join("\n"), filename);
@@ -74,14 +68,12 @@
                 filter = input.value.toUpperCase();
                 table = document.getElementById("tabletr");
                 tr = table.getElementsByTagName("tr");
-
                 // Loop through all table rows, and hide those who don't match the search query
                 for (i = 0; i < tr.length; i++) {
                     td = tr[i].getElementsByTagName("td")[0];
                     if (td) {
                         if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
                             tr[i].style.display = "";
-
                         } else {
                             tr[i].style.display = "none";
                         }
@@ -108,8 +100,7 @@
             window.onbeforeunload = function () {
 
                 sessionStorage.setItem("search", $('#myInput').val());
-
-
+               
             }
         </script>
 
@@ -127,17 +118,15 @@
                     $(".responstable").table2excel({
                         exclude: ".noExl",
                         name: "Excel Document Name",
-                        filename: "file_name",
+                        filename: "<%=request.getParameter("select_table")%>",
                         fileext: ".xls",
                         exclude_img: true,
                         exclude_links: true,
                         exclude_inputs: true
                     });
                 });
-
             });
         </script> 
-
 
 
     </head>
@@ -312,7 +301,7 @@
                             %>
 
                             <option 
-                                <%                                        if (request.getParameter("select_table") != null) {
+                                <%  if (request.getParameter("select_table") != null) {
                                         if (rsss.getString("Tables_in_svcsbia1").equals(request.getParameter("select_table"))) {
                                             out.println("selected");
                                         }
@@ -323,6 +312,7 @@
                             <%
 
                                     }
+
                                     rsss.close();
                                     connn.close();
                                 } catch (Exception e) {
@@ -366,11 +356,11 @@
 
 
                     </form>
+
                     <!-- ################################################################################################ -->     
                     <%--  <button id="btn" type="submit"  onclick="exportTableToCSV('<%out.print(request.getParameter("select_table"));%>.csv')"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button> --%>
-                    
-                    <button id="btn" type="submit"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>
 
+                    <button id="btn" type="submit"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>
                     <form action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
                         &nbsp;&nbsp;&nbsp;upload: 
                         <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
@@ -379,10 +369,12 @@
 
 
                     <br>
+                    <form action="droptable" autocomplete="off"  method="post">
+                        &nbsp;&nbsp;&nbsp;  <input id="text" name="text" type="text" placeholder="table name"></input>
+                        <input  id="drop" type="submit" value="droptable"></input>
+                    </form>
 
                 </div>
-
-
                 <!-- ################################################################################################ -->
 
                 <table id="tabletr" class="responstable" width="100%">
@@ -410,17 +402,17 @@
                                     "root", "kanomroo");
                             Statement st = con.createStatement();
                             ResultSet rs;
-                          
+
                             if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
                                 //TTTT
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            }else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
                                 //TTTF
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
                             } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
                                 //TTFT
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            }  else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
                                 //TTFF
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "'");
                             } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
@@ -429,7 +421,7 @@
                             } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
                                 //TFTF
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "'");
-                            }  else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
                                 //TFFT
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
                             } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
@@ -438,33 +430,30 @@
                             } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
                                 //FTTT
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            }else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
                                 //FTTF
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
                             } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
                                 //FTFT
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            }else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
                                 //FTFF
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "'");
-                            }else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
                                 //FFTT
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            }else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
                                 //FFTF
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "'");
-                            }else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
                                 //FFFT
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm like '%" + request.getParameter("myInput") + "%'");
                             } else {
                                 //FFFF
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table"));
                             }
-                            
-                            
-                           
 
-                        /*    if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
+                            /*    if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "'");
                             } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
                                 rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "'");
