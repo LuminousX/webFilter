@@ -29,6 +29,8 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "droptable", urlPatterns = {"/droptable"})
 public class droptable extends HttpServlet {
 
+    String tablename;
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -38,35 +40,50 @@ public class droptable extends HttpServlet {
 
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
                     "root", "kanomroo");
-            String tx = request.getParameter("text");
+            tablename = request.getParameter("nametable");
             Statement st = con.createStatement();
             ResultSet rs;
 
             PrintWriter out = response.getWriter();
-            if (!tx.equals("")) {
-                rs = st.executeQuery("show tables where tables_in_svcsbia1='" + tx + "';");
+            if (!tablename.equals("")) {
+                rs = st.executeQuery("show tables where tables_in_svcsbia1='" + tablename + "';");
                 if (rs.next()) {
-                    st.executeUpdate("drop table " + tx);
-                    out.println("<script type=\"text/javascript\">");
-                    out.println("alert('remove table successful');");
-                    out.println("location='adminpage.jsp';");
-                    out.println("</script>");
-                   
-                } else {
-                    out.println("<script type=\"text/javascript\">");
-                    out.println("alert('remove table failed');");
-                    out.println("location='adminpage.jsp';");
-                    out.println("</script>");
-               
-                }
+                    st.executeUpdate("drop table " + tablename);
+                    dropTableDate();
+                    out.println("remove table successful");
 
+                } else {
+                    out.println("remove table failed");
+
+                }
             } else {
-                out.println("<script type=\"text/javascript\">");
-                out.println("alert('please input name table');");
-                out.println("location='adminpage.jsp';");
-                out.println("</script>");
+
+                out.println("please input name table");
+                //  out.println("<script type=\"text/javascript\">");
+                //  out.println("alert('please input name table');");
+                //   out.println("location='adminpage.jsp';");
+                //   out.println("</script>");
 
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public void dropTableDate() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con;
+
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
+                    "root", "kanomroo");
+            Statement st = con.createStatement();
+            ResultSet rs;
+
+            st.executeUpdate("delete from table_date where name='" + tablename + "'");
 
         } catch (Exception e) {
             e.printStackTrace();

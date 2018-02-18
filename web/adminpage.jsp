@@ -26,25 +26,21 @@
             if (session.getAttribute("username") == null) {
                 response.sendRedirect("login.jsp");
             }
-            session.setAttribute("table", request.getParameter("select_table"));
         %>
 
-        <%!String text;%>
-
-
-
-        <script>
-            function downloadCSV(csv, filename) {
-                var csvFile;
-                var downloadLink;
-                csvFile = new Blob([csv], {type: "text/csv"});
-                downloadLink = document.createElement("a");
-                downloadLink.download = filename;
-                downloadLink.href = window.URL.createObjectURL(csvFile);
-                downloadLink.style.display = "none";
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-            }
+        <%--
+                <script>
+                    function downloadCSV(csv, filename) {
+                        var csvFile;
+                        var downloadLink;
+                        csvFile = new Blob([csv], {type: "text/csv"});
+                        downloadLink = document.createElement("a");
+                        downloadLink.download = filename;
+                        downloadLink.href = window.URL.createObjectURL(csvFile);
+                        downloadLink.style.display = "none";
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                    }
 
             function exportTableToCSV(filename) {
                 var csv = [];
@@ -58,7 +54,7 @@
                 downloadCSV(csv.join("\n"), filename);
             }
         </script>
-
+        --%>
         <script>
             function myFunction() {
 
@@ -95,22 +91,11 @@
                 sessionStorage.removeItem('search');
 
             }
-
             // Before refreshing the page, save the form data to sessionStorage
             window.onbeforeunload = function () {
-
                 sessionStorage.setItem("search", $('#myInput').val());
-               
             }
         </script>
-
-        <style>
-            .styleform{
-                resize: none;
-            }
-
-        </style>
-
 
         <script>
             $(function () {
@@ -128,378 +113,427 @@
             });
         </script> 
 
+        <style>
+            div.relative {
+                position: relative;
+                width: 1366px;
+            } 
+
+            div.absolute {
+                position: absolute;
+                right: 0;
+                width: 100%;
+            }
+        </style>
+
+        <script>
+            $(document).ready(function () {
+                $('#drop').click(function () {
+                    deletetable();
+                });
+            });
+
+            function deletetable() {
+                var text = prompt("Input your table name to delete.", "");
+                if (text == null) {
+                    return;
+                }
+                $.post(
+                        "droptable",
+                        {nametable: text}, //meaasge you want to send
+                        function (result) {
+                            alert(result);
+                            location.reload();
+                        });
+            }
+
+        </script>
 
     </head>
     <body style="background: #E0F2F1">
-        <header > 
-            <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
-            <nav> 
-                <ul>
-
-                    <li><a href="checklogout">Log Out</a></li>
-                </ul>
-            </nav>
-
-        </header>
-
-        <!-- ################################################################################################ -->
 
         <%! ResultSet rsss;%>
+        <form action="adminpage.jsp" method="post">  
+            <header> 
+                <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
+                <nav> 
+                    <ul>
+                        <li> <input autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/> </li>
+                        <li><a href="checklogout">Log Out</a></li>
+                    </ul>
+                </nav>
 
-        <section>
-            <div>
-                <div class="styleform">
-                    <form action="adminpage.jsp" method="post">
+            </header>
 
-                        &nbsp;&nbsp;&nbsp;<strong>Vm</strong>&nbsp;
+            <!-- ################################################################################################ -->
 
-                        <select name="select_Vm" onchange="this.form.submit();">
-                            <option value="vm_">All Vm</option>
+            <br><br><br><br>
 
-                            <%                                try {
-                                    Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                            "root", "kanomroo");
-                                    Statement st = con.createStatement();
-                                    ResultSet rs;
+            <div class="relative">
+                <div class="absolute">
+                    <table>
+                        <tr>
+                            <td align="left" width="25%"> 
+                                &nbsp;&nbsp;<strong>Vm</strong>&nbsp;
 
-                                    rs = st.executeQuery("SELECT Vm FROM " + request.getParameter("select_table"));
+                                <select name="select_Vm" onchange="this.form.submit();">
+                                    <option value="vm_">All Vm</option>
 
-                                    while (rs.next()) {
+                                    <%                                try {
+                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
+                                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
+                                                    "root", "kanomroo");
+                                            Statement st = con.createStatement();
+                                            ResultSet rs;
 
-                            %>
+                                            rs = st.executeQuery("SELECT Vm FROM " + request.getParameter("select_table"));
 
-                            <option value="<%=rs.getString("Vm")%>"
+                                            while (rs.next()) {
+
+                                    %>
+
+                                    <option value="<%=rs.getString("Vm")%>"
+                                            <%
+                                                if (request.getParameter("select_Vm") != null) {
+                                                    if (rs.getString("Vm").equals(request.getParameter("select_Vm"))) {
+                                                        out.println("selected");
+                                                    }
+                                                }
+                                            %>
+                                            ><%=rs.getString("Vm")%></option>
+
                                     <%
-                                        if (request.getParameter("select_Vm") != null) {
-                                            if (rs.getString("Vm").equals(request.getParameter("select_Vm"))) {
-                                                out.println("selected");
                                             }
+                                            rs.close();
+                                            con.close();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
                                     %>
-                                    ><%=rs.getString("Vm")%></option>
+                                </select>
+                            </td>
 
-                            <%
-                                    }
-                                    rs.close();
-                                    con.close();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            %>
-                        </select>
+                            <!-- ################################################################################################ -->
 
-                        <!-- ################################################################################################ -->
+                            <td width="" align="left">
+                                &nbsp;&nbsp; <strong>Powerstate</strong>&nbsp;
 
-                        &nbsp;&nbsp;&nbsp;<strong>Powerstate</strong>&nbsp;
+                                <select name="select_powerstate" onchange="this.form.submit();">
+                                    <option value="powerstate_">All Powerstate</option>
 
-                        <select name="select_powerstate" onchange="this.form.submit();">
-                            <option value="powerstate_">All Powerstate</option>
-
-                            <%
-                                try {
-
-                                    Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                            "root", "kanomroo");
-                                    Statement st = con.createStatement();
-                                    ResultSet rs;
-
-                                    rs = st.executeQuery("SELECT distinct powerstate FROM " + request.getParameter("select_table"));
-
-                                    while (rs.next()) {
-
-                            %>
-
-                            <option value="<%=rs.getString("powerstate")%>"
                                     <%
-                                        if (request.getParameter("select_powerstate") != null) {
-                                            if (rs.getString("powerstate").equals(request.getParameter("select_powerstate"))) {
-                                                out.println("selected");
+                                        try {
+
+                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
+                                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
+                                                    "root", "kanomroo");
+                                            Statement st = con.createStatement();
+                                            ResultSet rs;
+
+                                            rs = st.executeQuery("SELECT distinct powerstate FROM " + request.getParameter("select_table"));
+
+                                            while (rs.next()) {
+
+                                    %>
+
+                                    <option value="<%=rs.getString("powerstate")%>"
+                                            <%
+                                                if (request.getParameter("select_powerstate") != null) {
+                                                    if (rs.getString("powerstate").equals(request.getParameter("select_powerstate"))) {
+                                                        out.println("selected");
+                                                    }
+                                                }
+                                            %>
+                                            ><%=rs.getString("powerstate")%></option>
+
+                                    <%
                                             }
+                                            rs.close();
+                                            con.close();
+
+                                        } catch (Exception e) {
+
+                                            e.printStackTrace();
                                         }
                                     %>
-                                    ><%=rs.getString("powerstate")%></option>
 
-                            <%
-                                    }
-                                    rs.close();
-                                    con.close();
-                                    text = request.getParameter("myInput");
-                                } catch (Exception e) {
+                                </select>
+                            </td>
 
-                                    e.printStackTrace();
-                                }
-                            %>
+                            <!-- ################################################################################################ -->
 
-                        </select>
 
-                        <!-- ################################################################################################ -->
+                            <td width="" align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp; <strong>Host</strong>&nbsp;
+                                <select name="select_Host" onchange="this.form.submit();">                        
+                                    <option value="host_">All Host</option>
 
-                        &nbsp;&nbsp;&nbsp;<strong>Host</strong>&nbsp;
-                        <select name="select_Host" onchange="this.form.submit();">                        
-                            <option value="host_">All Host</option>
-
-                            <%
-                                try {
-
-                                    Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                            "root", "kanomroo");
-                                    Statement stt = conn.createStatement();
-                                    ResultSet rss;
-                                    if (request.getParameter("select_powerstate").equals("a")) {
-                                        rss = stt.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
-                                    } else {
-                                        rss = stt.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
-                                    }
-
-                                    while (rss.next()) {
-
-                            %>
-
-                            <option value="<%=rss.getString("Host")%>"
                                     <%
-                                        if (request.getParameter("select_Host") != null) {
-                                            if (rss.getString("Host").equals(request.getParameter("select_Host"))) {
-                                                out.println("selected");
+                                        try {
+
+                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
+                                            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
+                                                    "root", "kanomroo");
+                                            Statement stt = conn.createStatement();
+                                            ResultSet rss;
+                                            if (request.getParameter("select_powerstate").equals("a")) {
+                                                rss = stt.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
+                                            } else {
+                                                rss = stt.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
                                             }
+
+                                            while (rss.next()) {
+
+                                    %>
+
+                                    <option value="<%=rss.getString("Host")%>"
+                                            <%
+                                                if (request.getParameter("select_Host") != null) {
+                                                    if (rss.getString("Host").equals(request.getParameter("select_Host"))) {
+                                                        out.println("selected");
+                                                    }
+                                                }
+                                            %>
+                                            ><%=rss.getString("Host")%></option>
+
+                                    <%
+                                            }
+                                            rss.close();
+                                            conn.close();
+
+                                        } catch (Exception e) {
+
+                                            e.printStackTrace();
                                         }
                                     %>
-                                    ><%=rss.getString("Host")%></option>
 
-                            <%
-                                    }
-                                    rss.close();
-                                    conn.close();
-                                    text = request.getParameter("myInput");
-                                } catch (Exception e) {
+                                </select>
+                            </td>
 
-                                    e.printStackTrace();
-                                }
-                            %>
+                            <!-- ################################################################################################ -->
 
-                        </select>
 
-                        <!-- ################################################################################################ -->
+                            <td width="" align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp; <strong>Select Table</strong>&nbsp;
+                                <select name="select_table" onchange="this.form.submit();">                        
+                                    <option value="table_">Select Table</option>
+                                    <%
+                                        try {
 
-                        &nbsp;&nbsp;&nbsp;<strong>Select Table</strong>&nbsp;
-                        <select name="select_table" onchange="this.form.submit();">                        
-                            <option value="table_">Select Table</option>
-                            <%
-                                try {
+                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
+                                            Connection connn = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
+                                                    "root", "kanomroo");
+                                            Statement sttt = connn.createStatement();
 
-                                    Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                    Connection connn = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                            "root", "kanomroo");
-                                    Statement sttt = connn.createStatement();
+                                            rsss = sttt.executeQuery("show tables");
 
-                                    rsss = sttt.executeQuery("show tables");
+                                            while (rsss.next()) {
 
-                                    while (rsss.next()) {
+                                    %>
 
-                            %>
+                                    <option 
+                                        <%  if (request.getParameter("select_table") != null) {
+                                                if (rsss.getString("Tables_in_svcsbia1").equals(request.getParameter("select_table"))) {
+                                                    out.println("selected");
+                                                }
+                                            }
+                                        %>
+                                        ><%=rsss.getString("Tables_in_svcsbia1")%></option>
 
-                            <option 
-                                <%  if (request.getParameter("select_table") != null) {
-                                        if (rsss.getString("Tables_in_svcsbia1").equals(request.getParameter("select_table"))) {
-                                            out.println("selected");
+                                    <%
+                                            }
+                                            rsss.close();
+                                            connn.close();
+                                        } catch (Exception e) {
+
+                                            e.printStackTrace();
                                         }
-                                    }
-                                %>
-                                ><%=rsss.getString("Tables_in_svcsbia1")%></option>
+                                    %>
+                                </select>
 
-                            <%
+                            </td>
+                            <!-- ################################################################################################  -->
+                            <td>                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button>
+                            </td>
+                            <!-- ################################################################################################  -->
+                        </tr>
 
-                                    }
-
-                                    rsss.close();
-                                    connn.close();
-                                } catch (Exception e) {
-
-                                    e.printStackTrace();
-                                }
-                            %>
-
-                        </select>
-
-                        <%--   <a href="https://pbs.twimg.com/media/DElblT9UMAAPf3N.jpg">Example</a> --%>
-
-                        <br><br>
-
-                        <%
-                            try {
-                                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
-                                        "root", "kanomroo");
-                                Statement statement = connection.createStatement();
-
-                                ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
-                                String date;
-                                if (resultset.next()) {
-                                    date = resultset.getString("Date");
-                                } else {
-                                    date = "...";
-                                }
-                        %>
-
-                        &nbsp;&nbsp;&nbsp; Search &nbsp;
-                        <input autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder="Search for Vm.."/>
-                        &nbsp;&nbsp;&nbsp; Update at <%=date%> 
-
-                        <%  resultset.close();
-                                connection.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        %>
-
-
-                    </form>
-
-                    <!-- ################################################################################################ -->     
-                    <%--  <button id="btn" type="submit"  onclick="exportTableToCSV('<%out.print(request.getParameter("select_table"));%>.csv')"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button> --%>
-
-                    <button id="btn" type="submit"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>
-                    <form action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
-                        &nbsp;&nbsp;&nbsp;upload: 
-                        <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
-                        <span style="color:red;">${err}</span>
-                    </form> 
-
-
-                    <br>
-                    <form action="droptable" autocomplete="off"  method="post">
-                        &nbsp;&nbsp;&nbsp;  <input id="text" name="text" type="text" placeholder="table name"></input>
-                        <input  id="drop" type="submit" value="droptable"></input>
-                    </form>
-
+                    </table>
                 </div>
-                <!-- ################################################################################################ -->
-
-                <table id="tabletr" class="responstable" width="100%">
-                    <tr>
-                        <th width="150">VM</th>
-                        <th width="90">Powerstate</th>
-                        <th width="150">DNS_Name</th>
-                        <th width="90">CPUs</th>
-                        <th width="90">Memory</th>
-                        <th width="90">NICs</th>
-                        <th width="90">Disks</th>
-                        <th width="100">Network_1</th>
-                        <th width="150">Resource_pool</th>
-                        <th width="150">Provisioned_MB</th>
-                        <th width="90">In_Use_MB</th>
-                        <th width="150">Path</th>
-                        <th width="150">Cluster</th>
-                        <th width="150">Host</th>
-
-                    </tr>
-
-                    <%  try {
-                            Class.forName("com.mysql.jdbc.Driver").newInstance();
-                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                    "root", "kanomroo");
-                            Statement st = con.createStatement();
-                            ResultSet rs;
-
-                            if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //TTTT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                //TTTF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //TTFT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                //TTFF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //TFTT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                //TFTF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //TFFT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                //TFFF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //FTTT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                //FTTF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //FTFT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                //FTFF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //FFTT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                //FFTF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
-                                //FFFT
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm like '%" + request.getParameter("myInput") + "%'");
-                            } else {
-                                //FFFF
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table"));
-                            }
-
-                            /*    if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_")) {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_")) {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "'");
-                            } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_")) {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "'");
-                            } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_")) {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
-                            } else {
-                                rs = st.executeQuery("select * from " + request.getParameter("select_table"));
-                            } */
-                            while (rs.next()) {
-
-                    %>
-                    <tr>                    
-                        <td><%=rs.getString("VM")%></td>
-                        <td><%=rs.getString("Powerstate")%></td>
-                        <td><%=rs.getString("DNS_Name")%></td>
-                        <td><%=rs.getString("CPUs")%></td>
-                        <td><%=rs.getString("Memory")%></td>
-                        <td><%=rs.getString("NICs")%></td>
-                        <td><%=rs.getString("Disks")%></td>
-                        <td><%=rs.getString("Network_1")%></td>
-                        <td><%=rs.getString("Resource_pool")%></td>
-                        <td><%=rs.getString("Provisioned_MB")%></td>
-                        <td><%=rs.getString("In_Use_MB")%></td>
-                        <td><%=rs.getString("Path")%></td>
-                        <td><%=rs.getString("Cluster")%></td>
-                        <td><%=rs.getString("Host")%></td>
-                    </tr>
-
-                    <%  }
-                            con.close();
-                            rs.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    %>
-                </table>      
             </div>
-        </section>         
+        </form>  
+
+
+        <br><br>
+
+        <div class="relative">
+            <div class="absolute">       
+                <table width="" >
+                    <tr>
+                        <td>
+                            <form  action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            &nbsp;&nbsp;upload: 
+                                            <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
+
+                                            <%
+                                                try {
+                                                    Class.forName("com.mysql.jdbc.Driver").newInstance();
+                                                    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
+                                                            "root", "kanomroo");
+                                                    Statement statement = connection.createStatement();
+
+                                                    ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
+                                                    String date;
+                                                    if (resultset.next()) {
+                                                        date = resultset.getString("Date");
+                                                    } else {
+                                                        date = "...";
+                                                    }
+                                            %>
+                                            &nbsp;&nbsp;<strong> Update at</strong> &nbsp;<%=date%> 
+
+                                            <%  resultset.close();
+                                                    connection.close();
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            %>
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </td>
+
+                        <!-- ################################################################################################ -->
+
+                        <td>                        
+                            <table>
+                                <tr>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button id="btn" type="submit"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>                                       
+                                    </td>
+                                </tr>
+                            </table>                        
+                        </td>
+                        <!-- ################################################################################################ -->
+                    </tr>
+                </table>
+            </div>
+        </div> 
+
+        <br><br>
+        <div>    
+            <table id="tabletr" class="responstable" width="100%">
+                <tr>
+                    <th width="150">VM</th>
+                    <th width="90">Powerstate</th>
+                    <th width="150">DNS_Name</th>
+                    <th width="90">CPUs</th>
+                    <th width="90">Memory</th>
+                    <th width="90">NICs</th>
+                    <th width="90">Disks</th>
+                    <th width="100">Network_1</th>
+                    <th width="150">Resource_pool</th>
+                    <th width="150">Provisioned_MB</th>
+                    <th width="90">In_Use_MB</th>
+                    <th width="150">Path</th>
+                    <th width="150">Cluster</th>
+                    <th width="150">Host</th>
+
+                </tr>
+
+                <%  try {
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
+                        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
+                                "root", "kanomroo");
+                        Statement st = con.createStatement();
+                        ResultSet rs;
+
+                        if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //TTTT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            //TTTF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
+                        } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //TTFT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else if (!request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            //TTFF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and powerstate='" + request.getParameter("select_powerstate") + "'");
+                        } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //TFTT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            //TFTF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Host='" + request.getParameter("select_Host") + "'");
+                        } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //TFFT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else if (!request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            //TFFF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm='" + request.getParameter("select_Vm") + "'");
+                        } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //FTTT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            //FTTF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Host='" + request.getParameter("select_Host") + "'");
+                        } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //FTFT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else if (request.getParameter("select_Vm").equals("vm_") && !request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            //FTFF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where powerstate='" + request.getParameter("select_powerstate") + "'");
+                        } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //FFTT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "' and Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && !request.getParameter("select_Host").equals("host_") && request.getParameter("myInput").equals("")) {
+                            //FFTF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Host='" + request.getParameter("select_Host") + "'");
+                        } else if (request.getParameter("select_Vm").equals("vm_") && request.getParameter("select_powerstate").equals("powerstate_") && request.getParameter("select_Host").equals("host_") && !request.getParameter("myInput").equals("")) {
+                            //FFFT
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table") + " where Vm like '%" + request.getParameter("myInput") + "%'");
+                        } else {
+                            //FFFF
+                            rs = st.executeQuery("select * from " + request.getParameter("select_table"));
+                        }
+                        
+                        while (rs.next()) {
+
+                %>
+                <tr>                    
+                    <td><%=rs.getString("VM")%></td>
+                    <td><%=rs.getString("Powerstate")%></td>
+                    <td><%=rs.getString("DNS_Name")%></td>
+                    <td><%=rs.getString("CPUs")%></td>
+                    <td><%=rs.getString("Memory")%></td>
+                    <td><%=rs.getString("NICs")%></td>
+                    <td><%=rs.getString("Disks")%></td>
+                    <td><%=rs.getString("Network_1")%></td>
+                    <td><%=rs.getString("Resource_pool")%></td>
+                    <td><%=rs.getString("Provisioned_MB")%></td>
+                    <td><%=rs.getString("In_Use_MB")%></td>
+                    <td><%=rs.getString("Path")%></td>
+                    <td><%=rs.getString("Cluster")%></td>
+                    <td><%=rs.getString("Host")%></td>
+                </tr>
+
+                <%  }
+                        con.close();
+                        rs.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                %>
+            </table>      
+        </div>
 
         <style>
             .responstable {
@@ -588,7 +622,8 @@
                 color: #167F92;
             }
 
-        </style><br>   
+        </style>
+        <br>   
 
     </body>
 </html>

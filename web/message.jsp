@@ -15,31 +15,34 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="js/jquery.table2excel.js"></script>
+
 
         <title>JSP Page</title>
 
 
-        <%--
-     https://stackoverflow.com/questions/7555479/export-to-excel-jsp-page
-http://www.tutorials4u.net/struts-tutorial/struts_export_jsp_to_excel_example.html
-        
-        
+
+        <%--   <h2>${requestScope.message}</h2> 
 
         --%>
 
-    
+        <%--   PrintWriter out = response.getWriter();
+               out.println("<script type=\"text/javascript\">");
+                       out.println("alert('update successfull');");
+               out.println("location='login.jsp';");
+               out.println("</script>");
 
-    <%--   <h2>${requestScope.message}</h2> 
+        --%>
 
-    --%>
 
-    <%--   PrintWriter out = response.getWriter();
-           out.println("<script type=\"text/javascript\">");
-                   out.println("alert('update successfull');");
-           out.println("location='login.jsp';");
-           out.println("</script>");
+    </head>
+    <body>    
 
-    --%>
-</body>
+
+
+
+
+
+
+
+    </body>
 </html>
