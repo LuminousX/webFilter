@@ -173,7 +173,7 @@
                 <div class="absolute">
                     <table>
                         <tr>
-                            <td align="left" width="25%"> 
+                            <td align="left"> 
                                 &nbsp;&nbsp;<strong>Vm</strong>&nbsp;
 
                                 <select name="select_Vm" onchange="this.form.submit();">
@@ -354,31 +354,41 @@
                             </td>
                             <!-- ################################################################################################  -->
                             <td>                                
-                                &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button>
+                                <%--  &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> --%>
                             </td>
                             <!-- ################################################################################################  -->
                         </tr>
 
                     </table>
-                </div>
+                </div> 
             </div>
         </form>  
 
 
-        <br><br>
+        <br><br><br>
 
         <div class="relative">
             <div class="absolute">       
-                <table width="" >
+                <table>
                     <tr>
                         <td>
                             <form  action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
                                 <table>
                                     <tr>
-                                        <td>
-                                            &nbsp;&nbsp;upload: 
-                                            <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
+                                        <td valign="middle">
+                                            &nbsp;
+                                            <div class="upload-btn-wrapper">
+                                                <button class="btn">Upload a file</button>
+                                                <input type="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />
+                                            </div>
 
+                                            <%--  &nbsp;&nbsp;upload: 
+                                               <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
+                                            --%>
+
+                                        </td>
+                                        <!-- ################################################################################################ -->
+                                        <td>
                                             <%
                                                 try {
                                                     Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -402,7 +412,6 @@
                                                     e.printStackTrace();
                                                 }
                                             %>
-
                                         </td>
                                     </tr>
                                 </table>
@@ -414,7 +423,7 @@
                         <td>                        
                             <table>
                                 <tr>
-                                    <td>
+                                    <td valign="middle">
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <button id="btn" type="submit"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>                                       
                                     </td>
@@ -504,7 +513,7 @@
                             //FFFF
                             rs = st.executeQuery("select * from " + request.getParameter("select_table"));
                         }
-                        
+
                         while (rs.next()) {
 
                 %>
@@ -534,6 +543,32 @@
                 %>
             </table>      
         </div>
+
+        <style>
+            .upload-btn-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: inline-block;
+            }
+
+            .btn {
+                border: 2px solid gray;
+                color: gray;
+                background-color: pink;
+                padding: 8px 20px;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .upload-btn-wrapper input[type=file] {
+                font-size: 100px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+            }
+        </style>
 
         <style>
             .responstable {

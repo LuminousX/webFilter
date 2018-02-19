@@ -22,10 +22,10 @@
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 
 
-     <%--   <%
-            response.setHeader("Cache-Control", "no-cache, no-store, must=revalidate"); // HTTP 1.1
-            response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-            response.setHeader("Expires", "0"); // Proxies
+        <%--   <%
+               response.setHeader("Cache-Control", "no-cache, no-store, must=revalidate"); // HTTP 1.1
+               response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+               response.setHeader("Expires", "0"); // Proxies
 
 
         %>   --%>
@@ -95,7 +95,7 @@
 
 
         <%!String user_id;%>
-
+        <br><br><br><br>
         <section>				
             <div id="container_demo" >
 
