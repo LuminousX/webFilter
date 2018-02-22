@@ -105,7 +105,7 @@
                     <div id="login" class="animate form">
                         <form   autocomplete="on" method="post" action="checklogin" > 
                             <h1>Log in</h1> 
-                            <p> 
+                            <p>                                 
                                 <label for="username" class="uname" data-icon="u" > Username </label>
                                 <input  id="uname" name="uname" required="required" type="text" placeholder="username"/>
 

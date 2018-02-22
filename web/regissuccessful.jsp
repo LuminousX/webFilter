@@ -20,8 +20,5 @@
     <body>
         <p1 class="text"><strong><center>Register successful!</center></strong></p1>
         <strong><center>Please login <a href="login.jsp">here</a></center></strong> 
-        
-        
-     <%--   https://stackoverflow.com/questions/17591447/how-to-reload-current-page-without-losing-any-form-data
-    --%>
+              
 </html>

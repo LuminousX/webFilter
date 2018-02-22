@@ -21,23 +21,10 @@
 
 
 
-        <%--   <h2>${requestScope.message}</h2> 
-
-        --%>
-
-        <%--   PrintWriter out = response.getWriter();
-               out.println("<script type=\"text/javascript\">");
-                       out.println("alert('update successfull');");
-               out.println("location='login.jsp';");
-               out.println("</script>");
-
-        --%>
-
 
     </head>
     <body>    
 
-        
 
 
 

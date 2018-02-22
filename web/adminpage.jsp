@@ -56,6 +56,7 @@
         </script>
         --%>
         <script>
+            //filter search table
             function myFunction() {
 
                 // Declare variables 
@@ -98,6 +99,7 @@
         </script>
 
         <script>
+            // export to excel
             $(function () {
                 $("#btn").click(function () {
                     $(".responstable").table2excel({
@@ -127,6 +129,8 @@
         </style>
 
         <script>
+            // drop table in database
+            
             $(document).ready(function () {
                 $('#drop').click(function () {
                     deletetable();
@@ -365,7 +369,7 @@
         </form>  
 
 
-        <br><br><br>
+        <br><br>
 
         <div class="relative">
             <div class="absolute">       
@@ -555,9 +559,9 @@
                 border: 2px solid gray;
                 color: gray;
                 background-color: pink;
-                padding: 8px 20px;
+                padding: 7px 18px;
                 border-radius: 8px;
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: bold;
             }
 
