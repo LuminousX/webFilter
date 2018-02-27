@@ -36,19 +36,21 @@ public class checklogin extends HttpServlet {
         String pwd = request.getParameter("pass");
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
 
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login_DB",
-                    "root", "kanomroo");
-
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
+                    "root", "password");
+            
             Statement st = con.createStatement();
             ResultSet rs;
 
             rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "'");
            
             if (rs.next()) {
-                if (userid.equals("admin") && pwd.equals("password")) {
+                  rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "' and role ='admin'");
+                if (rs.next()){
+                    
                     HttpSession session = request.getSession();
                     session.setAttribute("username", userid);
                     response.sendRedirect("adminpage.jsp");

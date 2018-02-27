@@ -130,7 +130,7 @@
 
         <script>
             // drop table in database
-            
+
             $(document).ready(function () {
                 $('#drop').click(function () {
                     deletetable();
@@ -160,8 +160,10 @@
         <form action="adminpage.jsp" method="post">  
             <header> 
                 <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
+                
                 <nav> 
                     <ul>
+                        <li> <a href="restrictUser.jsp" >Restrict</a> </li>
                         <li> <input autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/> </li>
                         <li><a href="checklogout">Log Out</a></li>
                     </ul>
@@ -184,9 +186,9 @@
                                     <option value="vm_">All Vm</option>
 
                                     <%                                try {
-                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                                    "root", "kanomroo");
+                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                                    "root", "password");
                                             Statement st = con.createStatement();
                                             ResultSet rs;
 
@@ -227,10 +229,9 @@
 
                                     <%
                                         try {
-
-                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                                    "root", "kanomroo");
+                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                                    "root", "password");
                                             Statement st = con.createStatement();
                                             ResultSet rs;
 
@@ -274,10 +275,9 @@
 
                                     <%
                                         try {
-
-                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                                    "root", "kanomroo");
+                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                            Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                                    "root", "password");
                                             Statement stt = conn.createStatement();
                                             ResultSet rss;
                                             if (request.getParameter("select_powerstate").equals("a")) {
@@ -323,10 +323,9 @@
                                     <option value="table_">Select Table</option>
                                     <%
                                         try {
-
-                                            Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                            Connection connn = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                                    "root", "kanomroo");
+                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                            Connection connn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                                    "root", "password");
                                             Statement sttt = connn.createStatement();
 
                                             rsss = sttt.executeQuery("show tables");
@@ -395,9 +394,9 @@
                                         <td>
                                             <%
                                                 try {
-                                                    Class.forName("com.mysql.jdbc.Driver").newInstance();
-                                                    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
-                                                            "root", "kanomroo");
+                                                    Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                                    Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3308/date_table",
+                                                            "root", "password");
                                                     Statement statement = connection.createStatement();
 
                                                     ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
@@ -429,7 +428,7 @@
                                 <tr>
                                     <td valign="middle">
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <button id="btn" type="submit"  style="float: right" ><img src="images/imagesupload.png" width="30px" height= "30px"></button>                                       
+                                        <button id="btn" type="submit"  style="float: right" ><img src="images/21151.png" width="30px" height= "30px"></button>                                       
                                     </td>
                                 </tr>
                             </table>                        
@@ -444,7 +443,8 @@
         <div>    
             <table id="tabletr" class="responstable" width="100%">
                 <tr>
-                    <th width="150">VM</th>
+                    <th width="150">VM</th>          
+                    <th width="200">Annotation</th>          
                     <th width="90">Powerstate</th>
                     <th width="150">DNS_Name</th>
                     <th width="90">CPUs</th>
@@ -456,15 +456,16 @@
                     <th width="150">Provisioned_MB</th>
                     <th width="90">In_Use_MB</th>
                     <th width="150">Path</th>
+
                     <th width="150">Cluster</th>
                     <th width="150">Host</th>
 
                 </tr>
 
                 <%  try {
-                        Class.forName("com.mysql.jdbc.Driver").newInstance();
-                        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                                "root", "kanomroo");
+                        Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                        Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                "root", "password");
                         Statement st = con.createStatement();
                         ResultSet rs;
 
@@ -523,6 +524,7 @@
                 %>
                 <tr>                    
                     <td><%=rs.getString("VM")%></td>
+                    <td><%=rs.getString("Annotation")%></td>
                     <td><%=rs.getString("Powerstate")%></td>
                     <td><%=rs.getString("DNS_Name")%></td>
                     <td><%=rs.getString("CPUs")%></td>
@@ -533,7 +535,7 @@
                     <td><%=rs.getString("Resource_pool")%></td>
                     <td><%=rs.getString("Provisioned_MB")%></td>
                     <td><%=rs.getString("In_Use_MB")%></td>
-                    <td><%=rs.getString("Path")%></td>
+                    <td><%=rs.getString("Path")%></td>                 
                     <td><%=rs.getString("Cluster")%></td>
                     <td><%=rs.getString("Host")%></td>
                 </tr>

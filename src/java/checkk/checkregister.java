@@ -39,9 +39,9 @@ public class checkregister extends HttpServlet {
             email = request.getParameter("emailsignup");
             String re_pwd = request.getParameter("passwordsignup_confirm");
 
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login_DB",
-                    "root", "kanomroo");
+            Class.forName("org.mariadb.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
+                    "root", "password");
             Statement st = con.createStatement();
             //ResultSet rs;
 
@@ -55,7 +55,7 @@ public class checkregister extends HttpServlet {
                         // password not same confirm password
                         if (checkemail()) {
                             //email duplicate
-                            st.executeUpdate("insert into login(username, password, e_mail, name, surname, date) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now())");
+                            st.executeUpdate("insert into login(username, password, e_mail, name, lastname, date, role) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now(), 'user')");
                             response.sendRedirect("regissuccessful.jsp");
                         } else {
                             request.setAttribute("errMail", "email has been taken.");
@@ -89,11 +89,11 @@ public class checkregister extends HttpServlet {
 
     public boolean checkemail() throws ClassNotFoundException, SQLException {
         boolean check = false;
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login_DB",
-                "root", "kanomroo");
+        Class.forName("org.mariadb.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
+                "root", "password");
         Statement st = con.createStatement();
-    
+
         ResultSet rs = st.executeQuery("SELECT * from login where e_mail='" + email + "'");
 
         if (rs.next()) {

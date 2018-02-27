@@ -35,11 +35,11 @@ public class droptable extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
 
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                    "root", "kanomroo");
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                    "root", "password");
             tablename = request.getParameter("nametable");
             Statement st = con.createStatement();
             ResultSet rs;
@@ -75,11 +75,11 @@ public class droptable extends HttpServlet {
 
     public void dropTableDate() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
 
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/date_table",
-                    "root", "kanomroo");
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/date_table",
+                    "root", "password");
             Statement st = con.createStatement();
             ResultSet rs;
 

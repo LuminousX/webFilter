@@ -34,11 +34,11 @@ import org.apache.jasper.tagplugins.jstl.core.Out;
  *
  * @author Admin
  */
-@WebServlet(name = "uploadfile", urlPatterns = {"/uploadfile"})
+@WebServlet(name = "uploadfileAdmin", urlPatterns = {"/uploadfileAdmin"})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10, // 10MB
         maxRequestSize = 1024 * 1024 * 50)   // 50MB
-public class uploadfile extends HttpServlet {
+public class uploadfileAdmin extends HttpServlet {
 
     /**
      * Name of the directory where uploaded files will be saved, relative to the
@@ -78,11 +78,11 @@ public class uploadfile extends HttpServlet {
             String strfile = fileSaveDir.toString();
             pathfile = strfile.replace('\\', '/');
 
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
 
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                    "root", "kanomroo");
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                    "root", "password");
 
             Statement st = con.createStatement();
             PrintWriter out = response.getWriter();
@@ -144,11 +144,11 @@ public class uploadfile extends HttpServlet {
 
     public void checktableDate() throws ClassNotFoundException, SQLException {
 
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("org.mariadb.jdbc.Driver");
         Connection con;
 
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Date_table",
-                "root", "kanomroo");
+        con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/date_table",
+                "root", "password");
 
         Statement st = con.createStatement();
 
@@ -177,11 +177,11 @@ public class uploadfile extends HttpServlet {
 
     public Boolean checkImportFileDuplicate() throws ClassNotFoundException, SQLException {
         boolean checkDuplicate = false;
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("org.mariadb.jdbc.Driver");
         Connection con;
 
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/svcsbia1",
-                "root", "kanomroo");
+        con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                "root", "password");
 
         Statement st = con.createStatement();
 
@@ -193,8 +193,8 @@ public class uploadfile extends HttpServlet {
             String dropTable = "drop table " + filenamebase;
             st.executeUpdate(dropTable);
 
-            String createtable = "create table " + filenamebase + " (id int primary key auto_increment, Vm varchar(200), Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(20), Memory varchar(200), NICs varchar(20), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200), Cluster varchar(200) , Host varchar(100));";
-            String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22,@col23,@col24,@col25,@col26,@col27,@col28,@col29,@col30,@col31,@col32,@col33,@col34,@col35,@col36,@col37,@col38,@col39,@col40,@col41,@col42,@col43,@col44,@col45,@col46,@col47,@col48,@col49,@col50,@col51,@col52,@col53,@col54,@col55,@col56,@col57,@col58,@col59,@col60,@col61,@col62) set Vm=@col1, Powerstate=@col2,  DNS_Name=@col5, CPUs=@col13, Memory=@col14, NICs=@col15, Disks=@col16,  Network_1=@col17, Resource_pool=@col23, Provisioned_MB=@col31, In_Use_MB=@col32, Path=@col49, Cluster=@col53, Host=@col54;";
+            String createtable = "create table " + filenamebase + " (id int primary key auto_increment, Vm varchar(200), Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(20), Memory varchar(200), NICs varchar(20), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200),  Annotation TEXT, Cluster varchar(200) , Host varchar(100));";
+            String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22,@col23,@col24,@col25,@col26,@col27,@col28,@col29,@col30,@col31,@col32,@col33,@col34,@col35,@col36,@col37,@col38,@col39,@col40,@col41,@col42,@col43,@col44,@col45,@col46,@col47,@col48,@col49,@col50,@col51,@col52,@col53,@col54,@col55,@col56,@col57,@col58,@col59,@col60,@col61,@col62) set Vm=@col1, Powerstate=@col2,  DNS_Name=@col5, CPUs=@col13, Memory=@col14, NICs=@col15, Disks=@col16,  Network_1=@col17, Resource_pool=@col23, Provisioned_MB=@col31, In_Use_MB=@col32, Path=@col49, Annotation=@col50, Cluster=@col53, Host=@col54;";
             st.executeUpdate(createtable);
             st.executeUpdate(upload);
 
@@ -202,8 +202,8 @@ public class uploadfile extends HttpServlet {
         } else {
             // create table
 
-            String createtable = "create table " + filenamebase + " (id int primary key auto_increment, Vm varchar(200), Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(20), Memory varchar(200), NICs varchar(20), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200), Cluster varchar(200) , Host varchar(100));";
-            String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22,@col23,@col24,@col25,@col26,@col27,@col28,@col29,@col30,@col31,@col32,@col33,@col34,@col35,@col36,@col37,@col38,@col39,@col40,@col41,@col42,@col43,@col44,@col45,@col46,@col47,@col48,@col49,@col50,@col51,@col52,@col53,@col54,@col55,@col56,@col57,@col58,@col59,@col60,@col61,@col62) set Vm=@col1, Powerstate=@col2,  DNS_Name=@col5, CPUs=@col13, Memory=@col14, NICs=@col15, Disks=@col16,  Network_1=@col17, Resource_pool=@col23, Provisioned_MB=@col31, In_Use_MB=@col32, Path=@col49, Cluster=@col53, Host=@col54;";
+            String createtable = "create table " + filenamebase + " (id int primary key auto_increment, Vm varchar(200), Powerstate varchar(200), DNS_Name varchar(200), CPUs varchar(20), Memory varchar(200), NICs varchar(20), Disks varchar(200), Network_1 varchar(200), Resource_pool varchar(200), Provisioned_MB varchar(200), In_Use_MB varchar(200), Path varchar(200),  Annotation TEXT, Cluster varchar(200) , Host varchar(100));";
+            String upload = "load data local infile '" + pathfile + "/" + fileName + "' into table " + filenamebase + " fields terminated by ',' enclosed by '\"' lines terminated by '\n' ignore 1 lines (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22,@col23,@col24,@col25,@col26,@col27,@col28,@col29,@col30,@col31,@col32,@col33,@col34,@col35,@col36,@col37,@col38,@col39,@col40,@col41,@col42,@col43,@col44,@col45,@col46,@col47,@col48,@col49,@col50,@col51,@col52,@col53,@col54,@col55,@col56,@col57,@col58,@col59,@col60,@col61,@col62) set Vm=@col1, Powerstate=@col2,  DNS_Name=@col5, CPUs=@col13, Memory=@col14, NICs=@col15, Disks=@col16,  Network_1=@col17, Resource_pool=@col23, Provisioned_MB=@col31, In_Use_MB=@col32, Path=@col49, Annotation=@col50, Cluster=@col53, Host=@col54;";
             st.executeUpdate(createtable);
             st.executeUpdate(upload);
 
