@@ -153,14 +153,18 @@
 
         </script>
 
+
+
+
     </head>
     <body style="background: #E0F2F1">
-
+        
         <%! ResultSet rsss;%>
+    
         <form action="adminpage.jsp" method="post">  
             <header> 
                 <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
-                
+               
                 <nav> 
                     <ul>
                         <li> <a href="restrictUser.jsp" >Restrict</a> </li>
@@ -375,7 +379,7 @@
                 <table>
                     <tr>
                         <td>
-                            <form  action = "uploadfile" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
+                            <form  action = "uploadfileAdmin" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
                                 <table>
                                     <tr>
                                         <td valign="middle">

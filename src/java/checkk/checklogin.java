@@ -48,7 +48,7 @@ public class checklogin extends HttpServlet {
             rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "'");
            
             if (rs.next()) {
-                  rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "' and role ='admin'");
+                  rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "' and role ='Admin'");
                 if (rs.next()){
                     
                     HttpSession session = request.getSession();
