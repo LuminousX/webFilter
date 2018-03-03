@@ -12,7 +12,7 @@
 <%@ page import="java.sql.Connection" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page errorPage="errorpage.jsp" %> 
-<%@page import="checkk.droptable"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,8 +21,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">        
         <link href="css/stylehead.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-        <link href="css/styletable.css" rel="stylesheet" type="text/css">
-        <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
+        <link href="css/styletable.css" rel="stylesheet" type="text/css">        
+        <link href="css/styleDialog.css" rel="stylesheet" type="text/css"> 
 
         <%
             if (session.getAttribute("username") == null) {
@@ -32,10 +32,10 @@
 
         <script>
             // search Username
-            function myFunction() {
+            function searchUsername() {
 
                 var input, filter, table, tr, td, i;
-                input = document.getElementById("myInput");
+                input = document.getElementById("searchUsr");
                 filter = input.value.toUpperCase();
                 table = document.getElementById("tabletr");
                 tr = table.getElementsByTagName("tr");
@@ -53,123 +53,30 @@
 
         </script>
 
-        <script>
-            // Run on page load
-            window.onload = function () {
-
-                var search = sessionStorage.getItem('search');
-                if (search !== null)
-                    $('#myInput').val(search);
-                sessionStorage.removeItem('search');
-            }
-            // Before refreshing the page, save the form data to sessionStorage
-            window.onbeforeunload = function () {
-                sessionStorage.setItem("search", $('#myInput').val());
-            }
-        </script>
-
-
         <style>           
             div.relative {
                 position: relative;
                 width: 1366px;
+                margin: auto;
             } 
 
             div.absolute {
-                position: absolute;
-                right: 0;
-                width: 100%;
+                position: absolute;               
+                width: 1366px;
+                margin: auto;
             }
         </style>
 
 
-
-
-    </head>
-    <body style="background: #E0F2F1">
-
-
-        <form action="restrictUser.jsp" method="post">  
-            <header> 
-                <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
-
-                <nav> 
-                    <ul>                        
-                        <li> <input autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for name.."/> </li>
-                        <li><a href="checklogout">Log Out</a></li>
-                    </ul>
-                </nav>
-
-            </header>
-
-            <!-- ################################################################################################ -->
-
-            <br><br><br><br>
-        </form>  
-
-        <br><br>
-
-        <div class="relative">
-            <div class="absolute">       
-                <strong>Manage User</strong>
-            </div>
-        </div> 
-
-        <br><br>
-
-        <%-- table --%>
-        <div>  
-            <table id="tabletr" class="responstable" width="100%">
-                <tr>
-                    <th>Username</th>          
-                    <th>Name</th>  
-                    <th>Lastname</th>
-                    <th>E-mail</th>
-                    <th>Date</th>
-                    <th>Role</th>
-                    <th>???</th>
-                </tr>
-
-                <%  try {
-                        Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                        Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
-                                "root", "password");
-                        Statement st = con.createStatement();
-                        ResultSet rs;
-
-                        rs = st.executeQuery("select * from login");
-                        while (rs.next()) {
-
-                %>
-
-                <tr>                    
-                    <td><%=rs.getString("username")%></td>
-                    <td><%=rs.getString("name")%></td>
-                    <td><%=rs.getString("lastname")%></td>
-                    <td><%=rs.getString("e_mail")%></td>
-                    <td><%=rs.getString("date")%></td>
-                    <td><%=rs.getString("role")%></td>
-                    <td>                      
-                        <button type="submit" onclick="showDialog('<%=rs.getString("username")%>');"><img src="images/edit.png" width="30px" height= "30px"></button>
-                    </td>
-                </tr>
-
-                <%  }
-                        con.close();
-                        rs.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                %>
-            </table>      
-        </div>      
-
         <script>
+
             var textRole;
 
             //get text and show dialog
             function showDialog(text) {
+                // get username.
                 textRole = text;
+
                 document.getElementById("p1").innerHTML = "Username : " + textRole;
                 document.getElementById('dialog').style.display = 'block';
 
@@ -179,7 +86,15 @@
             $(document).ready(function () {
                 $('#btnsave').click(function () {
                     var status = $('input[name=role]:checked', '#dialogForm').val();
-                    if (status == "Admin") {
+                    if (textRole == "admin") {
+                        if (status == null) {
+                            alert("Please select role.");
+                        } else {
+                            alert("Can't change role.");
+                            var cancel = document.getElementById('dialog');
+                            cancel.style.display = "none";
+                        }
+                    } else if (status == "Admin") {
                         admin();
                     } else if (status == "User") {
                         user();
@@ -203,7 +118,11 @@
                         "editRole",
                         {edit: textRole, roles: "Admin"},
                         function (result) {
-                            location.reload();
+                            var cancel = document.getElementById('dialog');
+                            cancel.style.display = "none";
+                            document.getElementById('dualogSuccessful').style.display = 'block';
+                            closeDialog();
+
                         });
             }
 
@@ -213,86 +132,157 @@
                         "editRole",
                         {edit: textRole, roles: "User"},
                         function (result) {
-                            location.reload();
+                            var cancel = document.getElementById('dialog');
+                            cancel.style.display = "none";
+                            document.getElementById('dualogSuccessful').style.display = 'block';
+                            closeDialog();
+
                         });
             }
+
+            // close dialogSuccessful.
+            function closeDialog() {
+                $(document).ready(function () {
+                    $('#ok').click(function () {
+                        var ok = document.getElementById('dualogSuccessful');
+                        ok.style.display = "none";
+                        location.reload();
+                    });
+                });
+            }
+
         </script>
 
-        <%-- Dialog --%>            
+    </head>
+    <body style="background: #E0F2F1">
+
+
+       
+            <header class="tophead"> 
+                <a href="adminpage.jsp" class="active">Home</a> 
+
+                <nav> 
+                    <ul>    
+                        <li> <input class="searchbox" autocomplete="off" type = "text" name="searchUsr" onkeyup="searchUsername()" id="searchUsr"  placeholder=" Search for name.."/> </li>
+                        <li><a href="checklogout">Log Out</a></li>                        
+                    </ul>
+                </nav>
+
+            </header>       
+      
+        <br><br><br><br><br><br>
+
+        <!-- ################################################################################################ -->
+
+        <div class="relative">
+            <div class="absolute">       
+                <h1><strong>Restrict User</strong></h1>
+
+                <br>
+                <%-- table --%>          
+                <table id="tabletr" class="responstable" width="100%">
+                    <tr>
+                        <th>Username</th>          
+                        <th>Name</th>  
+                        <th>Lastname</th>
+                        <th>E-mail</th>
+                        <th>Date</th>
+                        <th>Role</th>
+                        <th>Edit</th>
+                    </tr>
+
+                    <%  try {
+                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
+                                    "root", "password");
+                            Statement st = con.createStatement();
+                            ResultSet rs;
+
+                            rs = st.executeQuery("select * from login");
+                            while (rs.next()) {
+
+                    %>
+
+                    <tr>                    
+                        <td><%=rs.getString("username")%></td>
+                        <td><%=rs.getString("name")%></td>
+                        <td><%=rs.getString("lastname")%></td>
+                        <td><%=rs.getString("e_mail")%></td>
+                        <td><%=rs.getString("date")%></td>
+                        <td><%=rs.getString("role")%></td>
+                        <td>                        
+                            <button type="submit" onclick="showDialog('<%=rs.getString("username")%>');"><img src="images/edit.png" width="30px" height= "30px"></button>
+                        </td>
+                    </tr>
+
+                    <%  }
+                            con.close();
+                            rs.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    %>
+                </table>      
+            </div>      
+        </div>
+
+
+        <%-- Dialog   --%>         
         <div id="dialog" class="modal">
             <form id="dialogForm" class="modal-content animate" method="post">
 
-                <div class="container">
-                    <p> Select Role of user. </p>
+                <header>
+                    <h2> Restrict </h2>
+                </header>
+                <article>
+                    <br> 
                     <p id="p1"></p>
+                    <br>
 
-                    <table>
-                        <tr>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="radio" name="role" value="Admin"> Admin                                
-                            </td>
-                        </tr>
-                        <tr>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="radio" name="role" value="User"> User
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                    <label  class="con">Admin  
+                        <input type="radio" name="role" value="Admin">  
+                        <span class="checkmark"></span>
+                    </label>
 
-                <div class="container" style="background-color:#f1f1f1">
-                    <button type="button" id="btnsave"  class="cancelbtn">Save</button>  
-                    <button type="button" id="btncalcel" onclick="" class="cancelbtn">Cancel</button>
-                </div> 
+                    <label  class="con">User
+                        <input type="radio" name="role" value="User"> 
+                        <span class="checkmark"></span>
+                    </label>                             
+                </article>
+
+                <footer>
+                    <a id="btnsave" class="button success">Accept</a>
+                    <label for="modal" id="btncalcel" class="button danger">Decline</label>
+                </footer>
 
             </form>
         </div>
 
 
+        <%-- Dialog successful --%>            
+        <div id="dualogSuccessful" class="modal">
+            <form class="modal-content animate" method="post">
+                <p> Update Successful. </p>                                      
+                <br><br>
+                <footer>
+                    <button type="button" id="ok"  class="button success">Accept</button>                      
+                </footer> 
+            </form>
+        </div>
 
-
-        <script>
-            // Get the modal
-            var modal = document.getElementById('dialog');
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-        </script>
-
-        <style>
-            .upload-btn-wrapper {
-                position: relative;
-                overflow: hidden;
-                display: inline-block;
-            }
-
-            .btn {
-                border: 2px solid gray;
-                color: gray;
-                background-color: pink;
-                padding : 7px 18px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: bold;
-            }
-
-            .upload-btn-wrapper input[type=file] {
-                font-size: 100px;
-                position : absolute;
-                left: 0;
-                top: 0;
-                opacity: 0;
-            }
-        </style>
+        <%--
+                <script>
+                    // Get the modal
+                    var modal = document.getElementById('dialog');
+                    // When the user clicks anywhere outside of the modal, close it
+                    window.onclick = function (event) {
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
+                </script>
+        --%>
 
         <br>  
-
     </body>
 </html>

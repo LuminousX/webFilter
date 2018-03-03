@@ -41,41 +41,32 @@ public class checklogin extends HttpServlet {
 
             con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
                     "root", "password");
-            
+
             Statement st = con.createStatement();
             ResultSet rs;
 
+            // check username and password. 
             rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "'");
-           
+
             if (rs.next()) {
-                  rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "' and role ='Admin'");
-                if (rs.next()){
-                    
+                // check if role is admin.
+                rs = st.executeQuery("select * from login where username='" + userid + "' and password='" + pwd + "' and role ='Admin'");
+                if (rs.next()) {
+                    // send seesion and og to adminpage.
                     HttpSession session = request.getSession();
                     session.setAttribute("username", userid);
                     response.sendRedirect("adminpage.jsp");
-
                 } else {
+                    //send session and go to userpage.
                     HttpSession session = request.getSession();
                     session.setAttribute("username", userid);
                     response.sendRedirect("userpage.jsp");
-
                 }
             } else {
-
-                //    HttpSession session = request.getSession();
-                //   session.setAttribute("wrong_uname_pass", "1");
-                //   response.sendRedirect("login.jsp");
-                
-                  request.setAttribute("errMsg", "username or password are incorrect");
-                  RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
-                  rd.forward(request, response);              
-           
-                  
-                //  request.setAttribute("message", "a");
-                //  getServletContext().getRequestDispatcher("/login.jsp").forward(
-                //          request, response);
-                //   response.sendRedirect("login.jsp");
+                // alert error message.
+                request.setAttribute("errMsg", "username or password are incorrect");
+                RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+                rd.forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();

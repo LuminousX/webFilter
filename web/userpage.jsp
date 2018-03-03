@@ -158,11 +158,11 @@
 
         <%! ResultSet rsss;%>
         <form action="userpage.jsp" method="post">  
-            <header> 
+            <header class="tophead"> 
                 <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
                 <nav> 
                     <ul>
-                        <li> <input autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/> </li>
+                        <li> <input <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/> </li>
                         <li><a href="checklogout">Log Out</a></li>
                     </ul>
                 </nav>
@@ -185,7 +185,7 @@
 
                                     <%                                try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                                                     "root", "password");
                                             Statement st = con.createStatement();
                                             ResultSet rs;
@@ -228,7 +228,7 @@
                                     <%
                                         try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                                                     "root", "password");
                                             Statement st = con.createStatement();
                                             ResultSet rs;
@@ -274,7 +274,7 @@
                                     <%
                                         try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                            Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                                                     "root", "password");
                                             Statement stt = conn.createStatement();
                                             ResultSet rss;
@@ -322,7 +322,7 @@
                                     <%
                                         try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection connn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                                            Connection connn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                                                     "root", "password");
                                             Statement sttt = connn.createStatement();
 
@@ -334,12 +334,12 @@
 
                                     <option 
                                         <%  if (request.getParameter("select_table") != null) {
-                                                if (rsss.getString("Tables_in_svcsbia1").equals(request.getParameter("select_table"))) {
+                                                if (rsss.getString("Tables_in_datafilter").equals(request.getParameter("select_table"))) {
                                                     out.println("selected");
                                                 }
                                             }
                                         %>
-                                        ><%=rsss.getString("Tables_in_svcsbia1")%></option>
+                                        ><%=rsss.getString("Tables_in_datafilter")%></option>
 
                                     <%
                                             }
@@ -461,7 +461,7 @@
 
                 <%  try {
                         Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                        Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+                        Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                                 "root", "password");
                         Statement st = con.createStatement();
                         ResultSet rs;

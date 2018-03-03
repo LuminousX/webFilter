@@ -43,18 +43,17 @@ public class checkregister extends HttpServlet {
             Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
                     "root", "password");
             Statement st = con.createStatement();
-            //ResultSet rs;
 
+            
             ResultSet rs = st.executeQuery("SELECT * from login where username='" + user + "'");
 
             if (!rs.next()) {
-                // register
+                // password at lease 6
                 if (pwd.length() > 5) {
-                    // password at lease 6
+                    // password not same confirm password
                     if (pwd.equals(re_pwd)) {
-                        // password not same confirm password
+                        //email duplicate 
                         if (checkemail()) {
-                            //email duplicate
                             st.executeUpdate("insert into login(username, password, e_mail, name, lastname, date, role) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now(), 'User')");
                             response.sendRedirect("regissuccessful.jsp");
                         } else {
@@ -77,7 +76,6 @@ public class checkregister extends HttpServlet {
                 request.setAttribute("errMsg", "username has been taken.");
                 RequestDispatcher rd = request.getRequestDispatcher("/regis.jsp");
                 rd.forward(request, response);
-                // response.sendRedirect("regis.jsp");
             }
 
             con.close();

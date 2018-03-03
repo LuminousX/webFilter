@@ -81,7 +81,7 @@ public class uploadfileAdmin extends HttpServlet {
             Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
 
-            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                     "root", "password");
 
             Statement st = con.createStatement();
@@ -180,12 +180,12 @@ public class uploadfileAdmin extends HttpServlet {
         Class.forName("org.mariadb.jdbc.Driver");
         Connection con;
 
-        con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+        con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                 "root", "password");
 
         Statement st = con.createStatement();
 
-        ResultSet rs = st.executeQuery("show tables where tables_in_svcsbia1='" + filenamebase + "'");
+        ResultSet rs = st.executeQuery("show tables where tables_in_datafilter='" + filenamebase + "'");
 
         if (rs.next()) {
             // replace table

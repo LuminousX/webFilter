@@ -38,7 +38,7 @@ public class droptable extends HttpServlet {
             Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
 
-            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/svcsbia1",
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
                     "root", "password");
             tablename = request.getParameter("nametable");
             Statement st = con.createStatement();
@@ -46,7 +46,7 @@ public class droptable extends HttpServlet {
 
             PrintWriter out = response.getWriter();
             if (!tablename.equals("")) {
-                rs = st.executeQuery("show tables where tables_in_svcsbia1='" + tablename + "';");
+                rs = st.executeQuery("show tables where tables_in_datafilter='" + tablename + "';");
                 if (rs.next()) {
                     st.executeUpdate("drop table " + tablename);
                     dropTableDate();
