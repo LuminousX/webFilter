@@ -64,7 +64,7 @@ section{
 }
 
 .searchbox {
-     border-radius: 5px;
+    border-radius: 5px;
     width: 180px;
     padding: 8px 12px;
     align-content: center;
@@ -72,3 +72,5 @@ section{
     border: 1px solid #ccc;    
     box-sizing: border-box;
 }
+
+

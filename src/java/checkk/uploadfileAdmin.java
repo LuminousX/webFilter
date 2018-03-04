@@ -85,39 +85,52 @@ public class uploadfileAdmin extends HttpServlet {
                     "root", "password");
 
             Statement st = con.createStatement();
-            PrintWriter out = response.getWriter();
+            // PrintWriter out = response.getWriter();  
+            HttpSession session = request.getSession();
             if (getExtension(fileName).equals("csv")) {
                 if (checkImportFileDuplicate() == true) {
                     // replace table
                     checktableDate();
-                    // request.setAttribute("err", "update successful");
+                    // request.setAttribute("dialogUpload", "UploadSuccessful");
                     //  RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
                     //  rd.forward(request, response);
 
-                    out.println("<script type=\"text/javascript\">");
-                    out.println("alert('update successful');");
-                    out.println("location='adminpage.jsp';");
-                    out.println("</script>");
+                  
+                    session.setAttribute("dialog", "Update Successful.");                    
+                    response.sendRedirect("adminpage.jsp");
+
+                    //  out.println("<script type=\"text/javascript\">");
+                    //  out.println("alert('update successful');");
+                    //  out.println("location='adminpage.jsp';");
+                    //  out.println("</script>");
                 } else {
                     // create table                    
                     //   request.setAttribute("err", "upload successfull");
                     //  RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
                     //  rd.forward(request, response);
                     checktableDate();
-                    out.println("<script type=\"text/javascript\">");
-                    out.println("alert('upload successful');");
-                    out.println("location='adminpage.jsp';");
-                    out.println("</script>");
+
+                   
+                    session.setAttribute("dialog", "Upload Successful.");
+                    response.sendRedirect("adminpage.jsp");
+                    //     out.println("<script type=\"text/javascript\">");
+                    //     out.println("alert('upload successful');");
+                    //     out.println("location='adminpage.jsp';");
+                    //      out.println("</script>");
                 }
             } else {
                 // request.setAttribute("err", "upload failed");
                 // RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
                 // rd.forward(request, response);
 
-                out.println("<script type=\"text/javascript\">");
-                out.println("alert('upload failed');");
-                out.println("location='adminpage.jsp';");
-                out.println("</script>");
+          
+                session.setAttribute("dialog", "Upload Failed.");
+                response.sendRedirect("adminpage.jsp");
+
+                //  out.println("<script type=\"text/javascript\">");
+                //  out.println("alert('upload failed');");
+                //    out.println("location='adminpage.jsp';");
+                //     out.println("</script>");
             }
 
             con.close();

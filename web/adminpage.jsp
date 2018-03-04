@@ -22,6 +22,7 @@
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/jquery.table2excel.js"></script>
         <link href="css/styletable.css" rel="stylesheet" type="text/css">
+        <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
 
         <%
             if (session.getAttribute("username") == null) {
@@ -116,19 +117,6 @@
             });
         </script> 
 
-        <style>
-            div.relative {
-                position: relative;
-                width: 1366px;
-            } 
-
-            div.absolute {
-                position: absolute;
-                right: 0;
-                width: 100%;
-            }
-        </style>
-
         <script>
             // drop table in database
 
@@ -154,18 +142,79 @@
 
         </script>
 
+        <script>
+            // alert dialog when submit.
+            window.onload = function () {
 
+                if (<%= session.getAttribute("dialog") == "Update Successful."%>) {
+                    document.getElementById('dialogSuccessful').style.display = 'block';
+                } else if (<%= session.getAttribute("dialog") == "Upload Successful."%>) {
+                    document.getElementById('dialogSuccessful').style.display = 'block';
+                } else if (<%= session.getAttribute("dialog") == "Upload Failed."%>) {
+                    document.getElementById('dialogSuccessful').style.display = 'block';
+                }
+            };
+            // close dialog
+            $(document).ready(function () {
+                $('#ok').click(function () {
+                    var ok = document.getElementById('dialogSuccessful');
+                    ok.style.display = "none";
+            <%session.removeAttribute("dialog");%>
+                    location.reload();
+                });
+            });
+
+        </script>
+
+
+        <style>
+            .upload-btn-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: inline-block;
+            }
+
+            .btn {
+                border: 2px solid gray;
+                color: gray;
+                background-color: pink;
+                padding: 7px 18px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .upload-btn-wrapper input[type=file] {
+                font-size: 100px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+            }
+
+            div.relative {
+                position: relative;
+                width: 1366px;
+            } 
+
+            div.absolute {
+                position: absolute;
+                right: 0;
+                width: 100%;
+            }
+
+        </style>
 
 
     </head>
     <body style="background: #E0F2F1">
-        
+
         <%! ResultSet rsss;%>
-    
+
         <form action="adminpage.jsp" method="post">  
-           <header class="tophead"> 
+            <header class="tophead"> 
                 <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
-               
+
                 <nav> 
                     <ul>
                         <li> <a href="restrictUser.jsp" >Restrict</a> </li>
@@ -321,7 +370,6 @@
 
                             <!-- ################################################################################################ -->
 
-
                             <td width="" align="left">
                                 &nbsp;&nbsp;&nbsp;&nbsp; <strong>Select Table</strong>&nbsp;
                                 <select name="select_table" onchange="this.form.submit();">                        
@@ -361,9 +409,9 @@
 
                             </td>
                             <!-- ################################################################################################  -->
-                            <td>                                
-                                <%--  &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> --%>
-                            </td>
+                            <%--<td>                                
+                                     &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> 
+                                </td>--%>
                             <!-- ################################################################################################  -->
                         </tr>
 
@@ -371,7 +419,6 @@
                 </div> 
             </div>
         </form>  
-
 
         <br><br>
 
@@ -387,12 +434,8 @@
                                             &nbsp;
                                             <div class="upload-btn-wrapper">
                                                 <button class="btn">Upload a file</button>
-                                                <input type="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />
+                                                <input type="file" id="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />                                               
                                             </div>
-
-                                            <%--  &nbsp;&nbsp;upload: 
-                                               <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
-                                            --%>
 
                                         </td>
                                         <!-- ################################################################################################ -->
@@ -461,7 +504,6 @@
                     <th width="150">Provisioned_MB</th>
                     <th width="90">In_Use_MB</th>
                     <th width="150">Path</th>
-
                     <th width="150">Cluster</th>
                     <th width="150">Host</th>
 
@@ -555,33 +597,19 @@
             </table>      
         </div>
 
-        <style>
-            .upload-btn-wrapper {
-                position: relative;
-                overflow: hidden;
-                display: inline-block;
-            }
 
-            .btn {
-                border: 2px solid gray;
-                color: gray;
-                background-color: pink;
-                padding: 7px 18px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: bold;
-            }
+        <%-- Dialog successful --%>            
+        <div id="dialogSuccessful" class="modal">
+            <form class="modal-content animate" method="post">
 
-            .upload-btn-wrapper input[type=file] {
-                font-size: 100px;
-                position: absolute;
-                left: 0;
-                top: 0;
-                opacity: 0;
-            }
-        </style>
+                <p>   <%= session.getAttribute("dialog")%> </p>                                      
+                <br><br>
+                <footer>
+                    <button type="button" id="ok"  class="button success">Accept</button>                      
+                </footer> 
+            </form>
+        </div>
 
-      
         <br>   
 
     </body>

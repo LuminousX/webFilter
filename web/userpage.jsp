@@ -21,6 +21,8 @@
         <link href="css/stylehead.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/jquery.table2excel.js"></script>
+        <link href="css/styletable.css" rel="stylesheet" type="text/css">
+        <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
 
         <%
             if (session.getAttribute("username") == null) {
@@ -28,33 +30,6 @@
             }
         %>
 
-        <%--
-                <script>
-                    function downloadCSV(csv, filename) {
-                        var csvFile;
-                        var downloadLink;
-                        csvFile = new Blob([csv], {type: "text/csv"});
-                        downloadLink = document.createElement("a");
-                        downloadLink.download = filename;
-                        downloadLink.href = window.URL.createObjectURL(csvFile);
-                        downloadLink.style.display = "none";
-                        document.body.appendChild(downloadLink);
-                        downloadLink.click();
-                    }
-
-            function exportTableToCSV(filename) {
-                var csv = [];
-                var rows = document.querySelectorAll("table tr");
-                for (var i = 0; i < rows.length; i++) {
-                    var row = [], cols = rows[i].querySelectorAll("td, th");
-                    for (var j = 0; j < cols.length; j++)
-                        row.push(cols[j].innerText);
-                    csv.push(row.join(","));
-                }
-                downloadCSV(csv.join("\n"), filename);
-            }
-        </script>
-        --%>
         <script>
             //filter search table
             function myFunction() {
@@ -98,24 +73,7 @@
             }
         </script>
 
-        <script>
-            // export to excel
-            $(function () {
-                $("#btn").click(function () {
-                    $(".responstable").table2excel({
-                        exclude: ".noExl",
-                        name: "Excel Document Name",
-                        filename: "<%=request.getParameter("select_table")%>",
-                        fileext: ".xls",
-                        exclude_img: true,
-                        exclude_links: true,
-                        exclude_inputs: true
-                    });
-                });
-            });
-        </script> 
-
-        <style>
+        <style>      
             div.relative {
                 position: relative;
                 width: 1366px;
@@ -127,31 +85,6 @@
                 width: 100%;
             }
         </style>
-
-        <script>
-            // drop table in database
-
-            $(document).ready(function () {
-                $('#drop').click(function () {
-                    deletetable();
-                });
-            });
-
-            function deletetable() {
-                var text = prompt("Input your table name to delete.", "");
-                if (text == null) {
-                    return;
-                }
-                $.post(
-                        "droptable",
-                        {nametable: text}, //meaasge you want to send
-                        function (result) {
-                            alert(result);
-                            location.reload();
-                        });
-            }
-
-        </script>
 
     </head>
     <body style="background: #E0F2F1">
@@ -265,7 +198,6 @@
 
                             <!-- ################################################################################################ -->
 
-
                             <td width="" align="left">
                                 &nbsp;&nbsp;&nbsp;&nbsp; <strong>Host</strong>&nbsp;
                                 <select name="select_Host" onchange="this.form.submit();">                        
@@ -353,10 +285,8 @@
                                 </select>
 
                             </td>
-                            <!-- ################################################################################################  -->
-                            <td>                                
-                                <%--  &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> --%>
-                            </td>
+
+
                             <!-- ################################################################################################  -->
                         </tr>
 
@@ -365,58 +295,43 @@
             </div>
         </form>  
 
-
         <br><br>
 
         <div class="relative">
             <div class="absolute">       
                 <table>
                     <tr>
-                        <td>
-                            <form  action = "uploadfileUser" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
-                                <table>
-                                    <tr>
-                                        <td valign="middle">
-                                            &nbsp;
-                                            <div class="upload-btn-wrapper">
-                                                <button class="btn">Upload a file</button>
-                                                <input type="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />
-                                            </div>
+                        <td>                          
+                            <table>
+                                <tr>     
+                                    <td>
+                                        <%
+                                            try {
+                                                Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                                Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3308/date_table",
+                                                        "root", "password");
+                                                Statement statement = connection.createStatement();
 
-                                            <%--  &nbsp;&nbsp;upload: 
-                                               <input id="file" type = "file" accept=".csv" name = "file" size = "35" onchange="javascript:this.form.submit();"/>
-                                            --%>
-
-                                        </td>
-                                        <!-- ################################################################################################ -->
-                                        <td>
-                                            <%
-                                                try {
-                                                    Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                                    Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3308/date_table",
-                                                            "root", "password");
-                                                    Statement statement = connection.createStatement();
-
-                                                    ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
-                                                    String date;
-                                                    if (resultset.next()) {
-                                                        date = resultset.getString("Date");
-                                                    } else {
-                                                        date = "...";
-                                                    }
-                                            %>
-                                            &nbsp;&nbsp;<strong> Update at</strong> &nbsp;<%=date%> 
-
-                                            <%  resultset.close();
-                                                    connection.close();
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
+                                                ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
+                                                String date;
+                                                if (resultset.next()) {
+                                                    date = resultset.getString("Date");
+                                                } else {
+                                                    date = "...";
                                                 }
-                                            %>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </form>
+                                        %>
+                                        &nbsp;<strong> Update at</strong> &nbsp;<%=date%> 
+
+                                        <%  resultset.close();
+                                                connection.close();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        %>
+                                    </td>
+                                </tr>
+                            </table>
+
                         </td>
 
                         <!-- ################################################################################################ -->
@@ -453,7 +368,6 @@
                     <th width="150">Provisioned_MB</th>
                     <th width="90">In_Use_MB</th>
                     <th width="150">Path</th>
-
                     <th width="150">Cluster</th>
                     <th width="150">Host</th>
 
@@ -546,120 +460,7 @@
             </table>      
         </div>
 
-        <style>
-            .upload-btn-wrapper {
-                position: relative;
-                overflow: hidden;
-                display: inline-block;
-            }
 
-            .btn {
-                border: 2px solid gray;
-                color: gray;
-                background-color: pink;
-                padding: 7px 18px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: bold;
-            }
-
-            .upload-btn-wrapper input[type=file] {
-                font-size: 100px;
-                position: absolute;
-                left: 0;
-                top: 0;
-                opacity: 0;
-            }
-        </style>
-
-        <style>
-            .responstable {
-                margin: 1em 0;
-                width: 100%;
-                overflow: hidden;
-                background: #FAFAFA;
-                color: #024457;
-                border-radius: 5px;
-                border: 1px solid #167F92;
-            }
-            .responstable tr {
-                border: 1px solid #D9E4E6;
-            }
-            .responstable tr:nth-child(odd) {
-                background-color: #E0E0E0;
-            }
-            .responstable th {
-                display: none;
-                border: 1px solid #FFF;
-                background-color: #167F92;
-                color: #FFF;
-                padding: 0em;
-            }
-            .responstable th:first-child {
-                display: table-cell;
-                text-align: center;
-            }
-            .responstable th:nth-child(2) {
-                display: table-cell;
-
-            }
-            .responstable th:nth-child(2) span {
-                display: none;
-            }
-            .responstable th:nth-child(2):after {
-                content: attr(data-th);
-            }
-            @media (min-width: 480px) {
-                .responstable th:nth-child(2) span {
-                    display: block;
-                }
-                .responstable th:nth-child(2):after {
-                    display: none;
-                }
-            }
-            .responstable td {
-                display: block;
-                word-wrap: break-word;
-                max-width: 100em;
-            }
-            .responstable td:first-child {
-                display: table-cell;
-                text-align: center;
-                border-right: 1px solid #D9E4E6;
-            }
-            @media (min-width: 480px) {
-                .responstable td {
-                    border: 1px solid #D9E4E6;
-                }
-            }
-            .responstable th, .responstable td {
-                text-align: left;
-                margin: .5em 1em;
-            }
-            @media (min-width: 480px) {
-                .responstable th, .responstable td {
-                    display: table-cell;
-                    padding: 1em;
-                }
-            }
-
-            body {
-                padding: 0 .1em;
-                font-family: Arial, sans-serif;
-                color: #024457;
-                background: #f2f2f2;
-            }
-
-            h1 {
-                font-family: Verdana;
-                font-weight: normal;
-                color: #024457;
-            }
-            h1 span {
-                color: #167F92;
-            }
-
-        </style>
         <br>   
 
     </body>

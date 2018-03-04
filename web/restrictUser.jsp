@@ -120,7 +120,7 @@
                         function (result) {
                             var cancel = document.getElementById('dialog');
                             cancel.style.display = "none";
-                            document.getElementById('dualogSuccessful').style.display = 'block';
+                            document.getElementById('dialogSuccessful').style.display = 'block';
                             closeDialog();
 
                         });
@@ -134,7 +134,7 @@
                         function (result) {
                             var cancel = document.getElementById('dialog');
                             cancel.style.display = "none";
-                            document.getElementById('dualogSuccessful').style.display = 'block';
+                            document.getElementById('dalogSuccessful').style.display = 'block';
                             closeDialog();
 
                         });
@@ -144,7 +144,7 @@
             function closeDialog() {
                 $(document).ready(function () {
                     $('#ok').click(function () {
-                        var ok = document.getElementById('dualogSuccessful');
+                        var ok = document.getElementById('dialogSuccessful');
                         ok.style.display = "none";
                         location.reload();
                     });
@@ -260,7 +260,7 @@
 
 
         <%-- Dialog successful --%>            
-        <div id="dualogSuccessful" class="modal">
+        <div id="dialogSuccessful" class="modal">
             <form class="modal-content animate" method="post">
                 <p> Update Successful. </p>                                      
                 <br><br>
