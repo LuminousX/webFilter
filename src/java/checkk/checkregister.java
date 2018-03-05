@@ -54,7 +54,7 @@ public class checkregister extends HttpServlet {
                     if (pwd.equals(re_pwd)) {
                         //email duplicate 
                         if (checkemail()) {
-                            st.executeUpdate("insert into login(username, password, e_mail, name, lastname, date, role) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now(), 'User')");
+                            st.executeUpdate("insert into login(username, password, e_mail, firstname, lastname, date, role) values ('" + user + "','" + pwd + "','" + email + "','" + fname + "','" + lname + "', Now(), 'User')");
                             response.sendRedirect("regissuccessful.jsp");
                         } else {
                             request.setAttribute("errMail", "email has been taken.");

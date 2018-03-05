@@ -25,8 +25,10 @@
         <link href="css/styleDialog.css" rel="stylesheet" type="text/css"> 
 
         <%
-            if (session.getAttribute("username") == null) {
+            if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
+            } else if (session.getAttribute("role").equals("user")) {
+                response.sendRedirect("userpage.jsp");
             }
         %>
 
@@ -134,7 +136,7 @@
                         function (result) {
                             var cancel = document.getElementById('dialog');
                             cancel.style.display = "none";
-                            document.getElementById('dalogSuccessful').style.display = 'block';
+                            document.getElementById('dialogSuccessful').style.display = 'block';
                             closeDialog();
 
                         });
@@ -155,21 +157,25 @@
 
     </head>
     <body style="background: #E0F2F1">
+      <header class="clearfix">
+                <div class="containerhead">
+                    <div class="header-left">
+                        <nav>
+                            <a href="adminpage.jsp">Home</a>
+                            <a href="restrictUser.jsp">Restrict</a>
+                            <a href="checklogout">Log Out</a>
+                        </nav>
+                    </div>
+                    <div class="header-right">
+                       
+                        <nav>
+                            <input class="searchbox" autocomplete="off" type = "text" name="searchUsr" onkeyup="searchUsername()" id="searchUsr"  placeholder=" Search for Username.."/>
 
+                        </nav>
+                    </div>
+                </div>
+            </header>               
 
-       
-            <header class="tophead"> 
-                <a href="adminpage.jsp" class="active">Home</a> 
-
-                <nav> 
-                    <ul>    
-                        <li> <input class="searchbox" autocomplete="off" type = "text" name="searchUsr" onkeyup="searchUsername()" id="searchUsr"  placeholder=" Search for name.."/> </li>
-                        <li><a href="checklogout">Log Out</a></li>                        
-                    </ul>
-                </nav>
-
-            </header>       
-      
         <br><br><br><br><br><br>
 
         <!-- ################################################################################################ -->
@@ -183,8 +189,8 @@
                 <table id="tabletr" class="responstable" width="100%">
                     <tr>
                         <th>Username</th>          
-                        <th>Name</th>  
-                        <th>Lastname</th>
+                        <th>First Name</th>  
+                        <th>Last Name</th>
                         <th>E-mail</th>
                         <th>Date</th>
                         <th>Role</th>
@@ -205,7 +211,7 @@
 
                     <tr>                    
                         <td><%=rs.getString("username")%></td>
-                        <td><%=rs.getString("name")%></td>
+                        <td><%=rs.getString("firstname")%></td>
                         <td><%=rs.getString("lastname")%></td>
                         <td><%=rs.getString("e_mail")%></td>
                         <td><%=rs.getString("date")%></td>

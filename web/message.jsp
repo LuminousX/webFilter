@@ -19,10 +19,10 @@
 
         <title>JSP Page</title>
 
-     
     </head>
-    <body>    
+    <body>   
 
-    
+
+
     </body>
 </html>

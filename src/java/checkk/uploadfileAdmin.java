@@ -91,12 +91,7 @@ public class uploadfileAdmin extends HttpServlet {
                 if (checkImportFileDuplicate() == true) {
                     // replace table
                     checktableDate();
-                    // request.setAttribute("dialogUpload", "UploadSuccessful");
-                    //  RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
-                    //  rd.forward(request, response);
-
-                  
-                    session.setAttribute("dialog", "Update Successful.");                    
+                    session.setAttribute("dialog", "Update Successful.");
                     response.sendRedirect("adminpage.jsp");
 
                     //  out.println("<script type=\"text/javascript\">");
@@ -105,12 +100,8 @@ public class uploadfileAdmin extends HttpServlet {
                     //  out.println("</script>");
                 } else {
                     // create table                    
-                    //   request.setAttribute("err", "upload successfull");
-                    //  RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
-                    //  rd.forward(request, response);
-                    checktableDate();
 
-                   
+                    checktableDate();
                     session.setAttribute("dialog", "Upload Successful.");
                     response.sendRedirect("adminpage.jsp");
                     //     out.println("<script type=\"text/javascript\">");
@@ -119,11 +110,7 @@ public class uploadfileAdmin extends HttpServlet {
                     //      out.println("</script>");
                 }
             } else {
-                // request.setAttribute("err", "upload failed");
-                // RequestDispatcher rd = request.getRequestDispatcher("/adminpage.jsp");
-                // rd.forward(request, response);
 
-          
                 session.setAttribute("dialog", "Upload Failed.");
                 response.sendRedirect("adminpage.jsp");
 
@@ -136,9 +123,6 @@ public class uploadfileAdmin extends HttpServlet {
             con.close();
             st.close();
 
-            // request.setAttribute("message", "Upload has been done successfully! >>> " + pathfile + "/" + filenamebase + "  " );
-            // getServletContext().getRequestDispatcher("/adminpage.jsp").forward(
-            //        request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

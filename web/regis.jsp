@@ -77,23 +77,23 @@
                         <form   autocomplete="off" method="post" action="checkregister"> 
                             <h1> Register </h1> 
                             <p> 
-                                <label for="usernamesignup" class="fname" data-icon="u">Your Name</label>
+                                <label for="usernamesignup" class="fname" data-icon="u">First Name</label>
                                 <input id="namesignup" name="namesignup" required="required" type="text" placeholder="name" />
                             </p>
 
                             <p> 
-                                <label for="usernamesignup" class="lname" data-icon="u">Your Lastname</label>
+                                <label for="usernamesignup" class="lname" data-icon="u">Last Name</label>
                                 <input id="surnamesignup" name="surnamesignup" required="required" type="text" placeholder="lastname" />
                             </p>
 
                             <p> 
-                                <label for="usernamesignup" class="uname" data-icon="u">Your Username</label>
+                                <label for="usernamesignup" class="uname" data-icon="u">Username</label>
                                 <input id="usernamesignup" name="usernamesignup" required="required" type="text" placeholder="username"  />
                                 <span style="color:red;">${errMsg}</span>
                             </p>
 
                             <p> 
-                                <label for="passwordsignup" class="youpasswd" data-icon="p">Your Password </label>
+                                <label for="passwordsignup" class="youpasswd" data-icon="p">Password </label>
                                 <input id="passwordsignup" name="passwordsignup" required="required" type="password" placeholder="password"/>
                                 <span style="color:red;">${errPassword}</span>
                             </p>
@@ -105,7 +105,7 @@
                             </p>
 
                             <p> 
-                                <label for="emailsignup" class="youmail" data-icon="e" > Your Email</label>
+                                <label for="emailsignup" class="youmail" data-icon="e" >Email</label>
                                 <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder="email@hotmail.com"/> 
                                 <span style="color:red;">${errMail}</span>
                             </p>

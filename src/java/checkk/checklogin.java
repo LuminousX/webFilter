@@ -54,12 +54,12 @@ public class checklogin extends HttpServlet {
                 if (rs.next()) {
                     // send seesion and og to adminpage.
                     HttpSession session = request.getSession();
-                    session.setAttribute("username", userid);
+                    session.setAttribute("role", "admin");
                     response.sendRedirect("adminpage.jsp");
                 } else {
                     //send session and go to userpage.
                     HttpSession session = request.getSession();
-                    session.setAttribute("username", userid);
+                    session.setAttribute("role", "user");
                     response.sendRedirect("userpage.jsp");
                 }
             } else {

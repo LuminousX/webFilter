@@ -24,14 +24,14 @@ public class checklogout extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        session.removeAttribute("username");
+        session.removeAttribute("role");
         session.invalidate();
         response.sendRedirect("login.jsp");
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        session.removeAttribute("username");
+        session.removeAttribute("role");
         session.invalidate();
         resp.sendRedirect("login.jsp");
     }

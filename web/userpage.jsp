@@ -25,8 +25,10 @@
         <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
 
         <%
-            if (session.getAttribute("username") == null) {
+            if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
+            } else if (session.getAttribute("role").equals("admin")) {
+                response.sendRedirect("adminpage.jsp");
             }
         %>
 
@@ -91,16 +93,21 @@
 
         <%! ResultSet rsss;%>
         <form action="userpage.jsp" method="post">  
-            <header class="tophead"> 
-                <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
-                <nav> 
-                    <ul>
-                        <li> <input <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/> </li>
-                        <li><a href="checklogout">Log Out</a></li>
-                    </ul>
-                </nav>
-
-            </header>
+            <header class="clearfix">
+                <div class="containerhead">
+                    <div class="header-left">
+                        <nav>
+                            <a href="adminpage.jsp">Home</a>                            
+                            <a href="checklogout">Log Out</a>
+                        </nav>
+                    </div>
+                    <div class="header-right">                       
+                        <nav>
+                            <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/>
+                        </nav>
+                    </div>
+                </div>
+            </header>        
 
             <!-- ################################################################################################ -->
 

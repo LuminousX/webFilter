@@ -167,12 +167,12 @@ span.psw {
 
 .modal-content header {
     position: relative;
-    display: block;
-    border-bottom: 1px solid #eee;
+    display: block;   
+    border-bottom: 1px solid pink;
 }
 .modal-content header h2 {
     margin: 0 0 10px;
-    padding: 0;
+    padding: 0;     
     font-size: 28px;
 }
 

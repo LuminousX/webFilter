@@ -25,8 +25,10 @@
         <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
 
         <%
-            if (session.getAttribute("username") == null) {
+            if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
+            } else if (session.getAttribute("role").equals("user")) {
+                response.sendRedirect("userpage.jsp");
             }
         %>
 
@@ -57,6 +59,38 @@
             }
         </script>
         --%>
+
+
+        <script>
+            // Run on page load
+            window.onload = function () {
+
+                $(function () {
+                    $("#myInput").focus();
+                });
+
+
+                // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
+                var search = sessionStorage.getItem('search');
+                if (search !== null)
+                    $('#myInput').val(search);
+                sessionStorage.removeItem('search');
+
+                // alert dialog when submit.
+                if (<%= session.getAttribute("dialog") == "Update Successful."%>) {
+                    document.getElementById('dialogSuccessful').style.display = 'block';
+                } else if (<%= session.getAttribute("dialog") == "Upload Successful."%>) {
+                    document.getElementById('dialogSuccessful').style.display = 'block';
+                } else if (<%= session.getAttribute("dialog") == "Upload Failed."%>) {
+                    document.getElementById('dialogSuccessful').style.display = 'block';
+                }
+            }
+            // Before refreshing the page, save the form data to sessionStorage
+            window.onbeforeunload = function () {
+                sessionStorage.setItem("search", $('#myInput').val());
+            }
+        </script>
+
         <script>
             //filter search table
             function myFunction() {
@@ -78,27 +112,15 @@
                         }
                     }
                 }
+                if (filter == "") {
+                    sessionStorage.removeItem('search');
+                    document.forms["formadmin"].submit();
+                }
             }
 
         </script>
 
-        <script>
-            // Run on page load
-            window.onload = function () {
 
-                // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
-
-                var search = sessionStorage.getItem('search');
-                if (search !== null)
-                    $('#myInput').val(search);
-                sessionStorage.removeItem('search');
-
-            }
-            // Before refreshing the page, save the form data to sessionStorage
-            window.onbeforeunload = function () {
-                sessionStorage.setItem("search", $('#myInput').val());
-            }
-        </script>
 
         <script>
             // export to excel
@@ -142,30 +164,6 @@
 
         </script>
 
-        <script>
-            // alert dialog when submit.
-            window.onload = function () {
-
-                if (<%= session.getAttribute("dialog") == "Update Successful."%>) {
-                    document.getElementById('dialogSuccessful').style.display = 'block';
-                } else if (<%= session.getAttribute("dialog") == "Upload Successful."%>) {
-                    document.getElementById('dialogSuccessful').style.display = 'block';
-                } else if (<%= session.getAttribute("dialog") == "Upload Failed."%>) {
-                    document.getElementById('dialogSuccessful').style.display = 'block';
-                }
-            };
-            // close dialog
-            $(document).ready(function () {
-                $('#ok').click(function () {
-                    var ok = document.getElementById('dialogSuccessful');
-                    ok.style.display = "none";
-            <%session.removeAttribute("dialog");%>
-                    location.reload();
-                });
-            });
-
-        </script>
-
 
         <style>
             .upload-btn-wrapper {
@@ -205,31 +203,38 @@
 
         </style>
 
-
     </head>
     <body style="background: #E0F2F1">
-
         <%! ResultSet rsss;%>
 
-        <form action="adminpage.jsp" method="post">  
-            <header class="tophead"> 
-                <%-- <a href="mainpage.jsp" class="active">Home</a> --%>
 
-                <nav> 
-                    <ul>
-                        <li> <a href="restrictUser.jsp" >Restrict</a> </li>
-                        <li> <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/> </li>
-                        <li><a href="checklogout">Log Out</a></li>
-                    </ul>
-                </nav>
-
-            </header>
+        <form id="formadmin" action="adminpage.jsp" method="post">   
+            <header class="clearfix">
+                <div class="containerhead">
+                    <div class="header-left">
+                        <nav>
+                            <a id="toy" href="adminpage.jsp">Home</a>
+                            <a href="restrictUser.jsp">Restrict</a>
+                            <a href="checklogout">Log Out</a>
+                        </nav>
+                    </div>
+                    <div class="header-right">
+                        <label for="open">
+                            <span class="hidden-desktop"></span>
+                        </label>
+                        <input type="checkbox" name="" id="open">
+                        <nav>
+                            <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/>
+                        </nav>
+                    </div>
+                </div>
+            </header>         
 
             <!-- ################################################################################################ -->
 
-            <br><br><br><br>
+            <br><br><br> <br>
 
-            <div class="relative">
+            <div  class="relative">
                 <div class="absolute">
                     <table>
                         <tr>
@@ -320,7 +325,6 @@
                             </td>
 
                             <!-- ################################################################################################ -->
-
 
                             <td width="" align="left">
                                 &nbsp;&nbsp;&nbsp;&nbsp; <strong>Host</strong>&nbsp;
@@ -436,7 +440,6 @@
                                                 <button class="btn">Upload a file</button>
                                                 <input type="file" id="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />                                               
                                             </div>
-
                                         </td>
                                         <!-- ################################################################################################ -->
                                         <td>
@@ -598,6 +601,7 @@
         </div>
 
 
+
         <%-- Dialog successful --%>            
         <div id="dialogSuccessful" class="modal">
             <form class="modal-content animate" method="post">
@@ -609,6 +613,19 @@
                 </footer> 
             </form>
         </div>
+
+        <script>
+            // close dialog
+            $(document).ready(function () {
+                $('#ok').click(function () {
+                    var ok = document.getElementById('dialogSuccessful');
+                    ok.style.display = "none";
+            <%session.removeAttribute("dialog");%>
+                    location.reload();
+                });
+            });
+
+        </script>
 
         <br>   
 
