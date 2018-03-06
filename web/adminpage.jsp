@@ -25,6 +25,7 @@
         <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
 
         <%
+            //check user don't have id when copy url
             if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
             } else if (session.getAttribute("role").equals("user")) {
@@ -62,13 +63,13 @@
 
 
         <script>
-            // Run on page load
+            // Run on page load.
             window.onload = function () {
 
+                // focus on search box.
                 $(function () {
                     $("#myInput").focus();
                 });
-
 
                 // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
                 var search = sessionStorage.getItem('search');
@@ -76,29 +77,51 @@
                     $('#myInput').val(search);
                 sessionStorage.removeItem('search');
 
-                // alert dialog when submit.
-                if (<%= session.getAttribute("dialog") == "Update Successful."%>) {
-                    document.getElementById('dialogSuccessful').style.display = 'block';
-                } else if (<%= session.getAttribute("dialog") == "Upload Successful."%>) {
-                    document.getElementById('dialogSuccessful').style.display = 'block';
-                } else if (<%= session.getAttribute("dialog") == "Upload Failed."%>) {
-                    document.getElementById('dialogSuccessful').style.display = 'block';
-                }
+                // show dialog when submit file.
+                showDialog();
+
             }
+
             // Before refreshing the page, save the form data to sessionStorage
             window.onbeforeunload = function () {
                 sessionStorage.setItem("search", $('#myInput').val());
             }
+
+            // default search box when click home.
+            $(document).ready(function () {
+                $("#home").click(function () {
+                    $('#myInput').val('');
+                });
+            });
         </script>
 
         <script>
-            //filter search table
+
+            function showDialog() {
+                // alert dialog when submit file.
+                if (<%=session.getAttribute("dialog") == "Update Successful"%> || <%= session.getAttribute("dialog") == "Upload Successful"%> || <%= session.getAttribute("dialog") == "Upload Failed"%>) {
+                    document.getElementById('dialogSuccessful').style.display = 'block';
+                }
+            }
+        </script>
+
+        <script>
+            //filter search table.
             function myFunction() {
 
                 // Declare variables 
                 var input, filter, table, tr, td, i;
                 input = document.getElementById("myInput");
                 filter = input.value.toUpperCase();
+
+                // default table when search box null.
+                if (filter == "") {
+                    sessionStorage.removeItem('search');
+                    document.forms["formadmin"].submit();
+                    return;
+                }
+
+
                 table = document.getElementById("tabletr");
                 tr = table.getElementsByTagName("tr");
                 // Loop through all table rows, and hide those who don't match the search query
@@ -112,36 +135,29 @@
                         }
                     }
                 }
-                if (filter == "") {
-                    sessionStorage.removeItem('search');
-                    document.forms["formadmin"].submit();
-                }
             }
-
         </script>
-
-
 
         <script>
             // export to excel
             $(function () {
                 $("#btn").click(function () {
-                    $(".responstable").table2excel({
-                        exclude: ".noExl",
-                        name: "Excel Document Name",
-                        filename: "<%=request.getParameter("select_table")%>",
-                        fileext: ".xls",
-                        exclude_img: true,
-                        exclude_links: true,
-                        exclude_inputs: true
-                    });
+                    if (document.forms["formadmin"].submit())
+                        $(".responstable").table2excel({
+                            exclude: ".noExl",
+                            name: "Excel Document Name",
+                            filename: "<%=request.getParameter("select_table")%>",
+                            fileext: ".xls",
+                            exclude_img: true,
+                            exclude_links: true,
+                            exclude_inputs: true
+                        });
                 });
             });
         </script> 
 
         <script>
             // drop table in database
-
             $(document).ready(function () {
                 $('#drop').click(function () {
                     deletetable();
@@ -166,6 +182,7 @@
 
 
         <style>
+            /* style upload button */
             .upload-btn-wrapper {
                 position: relative;
                 overflow: hidden;
@@ -188,19 +205,7 @@
                 left: 0;
                 top: 0;
                 opacity: 0;
-            }
-
-            div.relative {
-                position: relative;
-                width: 1366px;
-            } 
-
-            div.absolute {
-                position: absolute;
-                right: 0;
-                width: 100%;
-            }
-
+            }       
         </style>
 
     </head>
@@ -213,7 +218,7 @@
                 <div class="containerhead">
                     <div class="header-left">
                         <nav>
-                            <a id="toy" href="adminpage.jsp">Home</a>
+                            <a id="home" href="adminpage.jsp">Home</a>
                             <a href="restrictUser.jsp">Restrict</a>
                             <a href="checklogout">Log Out</a>
                         </nav>
@@ -224,7 +229,7 @@
                         </label>
                         <input type="checkbox" name="" id="open">
                         <nav>
-                            <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/>
+                            <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction();" id="myInput"  placeholder=" Search for Vm.."/>
                         </nav>
                     </div>
                 </div>
@@ -234,8 +239,8 @@
 
             <br><br><br> <br>
 
-            <div  class="relative">
-                <div class="absolute">
+            <div  class="relativeLayout">
+                <div class="absoluteLayout">
                     <table>
                         <tr>
                             <td align="left"> 
@@ -424,10 +429,10 @@
             </div>
         </form>  
 
-        <br><br>
+        <br>
 
-        <div class="relative">
-            <div class="absolute">       
+        <div class="relativeLayout">
+            <div class="absoluteLayout">       
                 <table>
                     <tr>
                         <td>
@@ -490,7 +495,8 @@
             </div>
         </div> 
 
-        <br><br>
+        <!-- ################################################################################################ -->
+
         <div>    
             <table id="tabletr" class="responstable" width="100%">
                 <tr>
@@ -509,7 +515,6 @@
                     <th width="150">Path</th>
                     <th width="150">Cluster</th>
                     <th width="150">Host</th>
-
                 </tr>
 
                 <%  try {
@@ -599,14 +604,13 @@
                 %>
             </table>      
         </div>
-
+        <!-- ################################################################################################ -->
 
 
         <%-- Dialog successful --%>            
         <div id="dialogSuccessful" class="modal">
             <form class="modal-content animate" method="post">
-
-                <p>   <%= session.getAttribute("dialog")%> </p>                                      
+                <p><%= session.getAttribute("dialog")%>.</p>                                      
                 <br><br>
                 <footer>
                     <button type="button" id="ok"  class="button success">Accept</button>                      
@@ -624,7 +628,6 @@
                     location.reload();
                 });
             });
-
         </script>
 
         <br>   

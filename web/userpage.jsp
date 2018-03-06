@@ -25,6 +25,7 @@
         <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
 
         <%
+            //check user don't have id when copy url
             if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
             } else if (session.getAttribute("role").equals("admin")) {
@@ -32,14 +33,54 @@
             }
         %>
 
+
         <script>
-            //filter search table
+            // Run on page load.
+            window.onload = function () {
+
+                // focus on search box.
+                $(function () {
+                    $("#myInput").focus();
+                });
+
+                // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
+                var search = sessionStorage.getItem('search');
+                if (search !== null)
+                    $('#myInput').val(search);
+                sessionStorage.removeItem('search');
+
+
+            }
+
+            // Before refreshing the page, save the form data to sessionStorage
+            window.onbeforeunload = function () {
+                sessionStorage.setItem("search", $('#myInput').val());
+            }
+
+            // default search box when click home.
+            $(document).ready(function () {
+                $("#home").click(function () {
+                    $('#myInput').val('');
+                });
+            });
+        </script>       
+
+        <script>
+            //filter search table.
             function myFunction() {
 
                 // Declare variables 
                 var input, filter, table, tr, td, i;
                 input = document.getElementById("myInput");
                 filter = input.value.toUpperCase();
+
+                // default table when search box null.
+                if (filter == "") {
+                    sessionStorage.removeItem('search');
+                    document.forms["formadmin"].submit();
+                    return;
+                }
+
                 table = document.getElementById("tabletr");
                 tr = table.getElementsByTagName("tr");
                 // Loop through all table rows, and hide those who don't match the search query
@@ -54,67 +95,58 @@
                     }
                 }
             }
-
         </script>
 
         <script>
-            // Run on page load
-            window.onload = function () {
-
-                // If sessionStorage is storing default values (ex. name), exit the function and do not restore data
-
-                var search = sessionStorage.getItem('search');
-                if (search !== null)
-                    $('#myInput').val(search);
-                sessionStorage.removeItem('search');
-
-            }
-            // Before refreshing the page, save the form data to sessionStorage
-            window.onbeforeunload = function () {
-                sessionStorage.setItem("search", $('#myInput').val());
-            }
-        </script>
-
-        <style>      
-            div.relative {
-                position: relative;
-                width: 1366px;
-            } 
-
-            div.absolute {
-                position: absolute;
-                right: 0;
-                width: 100%;
-            }
-        </style>
+            // export to excel
+            $(function () {
+                $("#btn").click(function () {
+                    if (document.forms["formadmin"].submit())
+                        $(".responstable").table2excel({
+                            exclude: ".noExl",
+                            name: "Excel Document Name",
+                            filename: "<%=request.getParameter("select_table")%>",
+                            fileext: ".xls",
+                            exclude_img: true,
+                            exclude_links: true,
+                            exclude_inputs: true
+                        });
+                });
+            });
+        </script> 
 
     </head>
     <body style="background: #E0F2F1">
-
         <%! ResultSet rsss;%>
-        <form action="userpage.jsp" method="post">  
+
+
+        <form id="formadmin" action="userpage.jsp" method="post">   
             <header class="clearfix">
                 <div class="containerhead">
                     <div class="header-left">
                         <nav>
-                            <a href="adminpage.jsp">Home</a>                            
+                            <a id="home" href="adminpage.jsp">Home</a>                            
                             <a href="checklogout">Log Out</a>
                         </nav>
                     </div>
-                    <div class="header-right">                       
+                    <div class="header-right">
+                        <label for="open">
+                            <span class="hidden-desktop"></span>
+                        </label>
+                        <input type="checkbox" name="" id="open">
                         <nav>
-                            <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction()" id="myInput"  placeholder=" Search for Vm.."/>
+                            <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction();" id="myInput"  placeholder=" Search for Vm.."/>
                         </nav>
                     </div>
                 </div>
-            </header>        
+            </header>         
 
             <!-- ################################################################################################ -->
 
             <br><br><br><br>
 
-            <div class="relative">
-                <div class="absolute">
+            <div  class="relativeLayout">
+                <div class="absoluteLayout">
                     <table>
                         <tr>
                             <td align="left"> 
@@ -253,7 +285,6 @@
 
                             <!-- ################################################################################################ -->
 
-
                             <td width="" align="left">
                                 &nbsp;&nbsp;&nbsp;&nbsp; <strong>Select Table</strong>&nbsp;
                                 <select name="select_table" onchange="this.form.submit();">                        
@@ -292,8 +323,10 @@
                                 </select>
 
                             </td>
-
-
+                            <!-- ################################################################################################  -->
+                            <%--<td>                                
+                                     &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> 
+                                </td>--%>
                             <!-- ################################################################################################  -->
                         </tr>
 
@@ -302,15 +335,15 @@
             </div>
         </form>  
 
-        <br><br>
+        <br>
 
-        <div class="relative">
-            <div class="absolute">       
+        <div class="relativeLayout">
+            <div class="absoluteLayout">       
                 <table>
                     <tr>
-                        <td>                          
+                        <td>
                             <table>
-                                <tr>     
+                                <tr>                            
                                     <td>
                                         <%
                                             try {
@@ -327,7 +360,7 @@
                                                     date = "...";
                                                 }
                                         %>
-                                        &nbsp;<strong> Update at</strong> &nbsp;<%=date%> 
+                                        &nbsp;&nbsp;<strong> Update at</strong> &nbsp;<%=date%> 
 
                                         <%  resultset.close();
                                                 connection.close();
@@ -338,7 +371,6 @@
                                     </td>
                                 </tr>
                             </table>
-
                         </td>
 
                         <!-- ################################################################################################ -->
@@ -359,7 +391,8 @@
             </div>
         </div> 
 
-        <br><br>
+        <!-- ################################################################################################ -->
+
         <div>    
             <table id="tabletr" class="responstable" width="100%">
                 <tr>
@@ -466,7 +499,7 @@
                 %>
             </table>      
         </div>
-
+        <!-- ################################################################################################ -->
 
         <br>   
 

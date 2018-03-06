@@ -33,6 +33,10 @@
         %>
 
         <script>
+            sessionStorage.removeItem('search');
+        </script>
+
+        <script>
             // search Username
             function searchUsername() {
 
@@ -53,22 +57,7 @@
                 }
             }
 
-        </script>
-
-        <style>           
-            div.relative {
-                position: relative;
-                width: 1366px;
-                margin: auto;
-            } 
-
-            div.absolute {
-                position: absolute;               
-                width: 1366px;
-                margin: auto;
-            }
-        </style>
-
+        </script>   
 
         <script>
 
@@ -97,9 +86,9 @@
                             cancel.style.display = "none";
                         }
                     } else if (status == "Admin") {
-                        admin();
+                        manageRole(status);
                     } else if (status == "User") {
-                        user();
+                        manageRole(status);
                     } else {
                         alert("Please select role.");
                     }
@@ -115,66 +104,64 @@
             });
 
             // pass value and refresh
-            function admin() {
+            function manageRole(status) {
                 $.post(
                         "editRole",
-                        {edit: textRole, roles: "Admin"},
+                        {edit: textRole, roles: status},
                         function (result) {
                             var cancel = document.getElementById('dialog');
                             cancel.style.display = "none";
                             document.getElementById('dialogSuccessful').style.display = 'block';
-                            closeDialog();
-
-                        });
-            }
-
-            // pass value and refresh
-            function user() {
-                $.post(
-                        "editRole",
-                        {edit: textRole, roles: "User"},
-                        function (result) {
-                            var cancel = document.getElementById('dialog');
-                            cancel.style.display = "none";
-                            document.getElementById('dialogSuccessful').style.display = 'block';
-                            closeDialog();
 
                         });
             }
 
             // close dialogSuccessful.
-            function closeDialog() {
-                $(document).ready(function () {
-                    $('#ok').click(function () {
-                        var ok = document.getElementById('dialogSuccessful');
-                        ok.style.display = "none";
-                        location.reload();
-                    });
+            $(document).ready(function () {
+                $('#ok').click(function () {
+                    var ok = document.getElementById('dialogSuccessful');
+                    ok.style.display = "none";
+                    location.reload();
                 });
-            }
+            });
 
         </script>
 
+        <style>   
+            /* fixed layout */
+            div.relative {
+                position: relative;
+                width: 1366px;
+                margin: auto;
+            } 
+
+            div.absolute {
+                position: absolute;               
+                width: 1366px;
+                margin: auto;
+            }
+        </style>
+
     </head>
     <body style="background: #E0F2F1">
-      <header class="clearfix">
-                <div class="containerhead">
-                    <div class="header-left">
-                        <nav>
-                            <a href="adminpage.jsp">Home</a>
-                            <a href="restrictUser.jsp">Restrict</a>
-                            <a href="checklogout">Log Out</a>
-                        </nav>
-                    </div>
-                    <div class="header-right">
-                       
-                        <nav>
-                            <input class="searchbox" autocomplete="off" type = "text" name="searchUsr" onkeyup="searchUsername()" id="searchUsr"  placeholder=" Search for Username.."/>
-
-                        </nav>
-                    </div>
+        <header class="clearfix">
+            <div class="containerhead">
+                <div class="header-left">
+                    <nav>
+                        <a href="adminpage.jsp">Home</a>
+                        <a href="restrictUser.jsp">Restrict</a>
+                        <a href="checklogout">Log Out</a>
+                    </nav>
                 </div>
-            </header>               
+                <div class="header-right">
+
+                    <nav>
+                        <input class="searchbox" autocomplete="off" type = "text" name="searchUsr" onkeyup="searchUsername()" id="searchUsr"  placeholder=" Search for Username.."/>
+
+                    </nav>
+                </div>
+            </div>
+        </header>               
 
         <br><br><br><br><br><br>
 
@@ -241,6 +228,7 @@
                     <h2> Restrict </h2>
                 </header>
                 <article>
+
                     <br> 
                     <p id="p1"></p>
                     <br>

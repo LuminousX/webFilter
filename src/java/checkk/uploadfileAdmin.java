@@ -91,7 +91,7 @@ public class uploadfileAdmin extends HttpServlet {
                 if (checkImportFileDuplicate() == true) {
                     // replace table
                     checktableDate();
-                    session.setAttribute("dialog", "Update Successful.");
+                    session.setAttribute("dialog", "Update Successful");
                     response.sendRedirect("adminpage.jsp");
 
                     //  out.println("<script type=\"text/javascript\">");
@@ -102,7 +102,7 @@ public class uploadfileAdmin extends HttpServlet {
                     // create table                    
 
                     checktableDate();
-                    session.setAttribute("dialog", "Upload Successful.");
+                    session.setAttribute("dialog", "Upload Successful");
                     response.sendRedirect("adminpage.jsp");
                     //     out.println("<script type=\"text/javascript\">");
                     //     out.println("alert('upload successful');");
@@ -111,7 +111,7 @@ public class uploadfileAdmin extends HttpServlet {
                 }
             } else {
 
-                session.setAttribute("dialog", "Upload Failed.");
+                session.setAttribute("dialog", "Upload Failed");
                 response.sendRedirect("adminpage.jsp");
 
                 //  out.println("<script type=\"text/javascript\">");

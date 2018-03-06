@@ -177,3 +177,15 @@ nav>a:hover{
     border: 1px solid #ccc;    
     box-sizing: border-box;
 }
+
+/*fixed relative */
+relativeLayout {
+    position: relative;
+    width: 1366px;
+} 
+absoluteLayout {
+    position: absolute;
+    right: 0;
+    width: 100%;
+}
+

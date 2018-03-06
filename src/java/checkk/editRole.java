@@ -42,15 +42,12 @@ public class editRole extends HttpServlet {
             Statement st = con.createStatement();
             ResultSet rs;
 
-            rs = st.executeQuery("select * from login where username='" + username + "'");           
-            
+            rs = st.executeQuery("select * from login where username='" + username + "'");
+
             if (rs.next()) {
                 st.executeUpdate("update login set role='" + role + "' where username='" + username + "'");
-                out.print("successful");
-            } else {
-                out.print("failed");
             }
-
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
