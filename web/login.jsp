@@ -20,7 +20,9 @@
         <link rel="stylesheet" type="text/css" href="css/animate-custom.css" />
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 
-
+        <script>
+            sessionStorage.removeItem('search');
+        </script>
         <%--
                 <script>
                     // Run on page load

@@ -18,11 +18,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Filter</title>
-        <link href="css/stylehead.css" rel="stylesheet" type="text/css">
+
+        <link rel="stylesheet" type="text/css" href="css/dragtable.css" />
+        <link rel="stylesheet" type="text/css" href="css/reset.css" />
+        <link rel="stylesheet" type="text/css" href="css/stylehead.css"> 
+        <link rel="stylesheet" type="text/css" href="css/styletable.css">
+        <link rel="stylesheet" type="text/css" href="css/styleDialog.css">
+
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/jquery.table2excel.js"></script>
-        <link href="css/styletable.css" rel="stylesheet" type="text/css">
-        <link href="css/styleDialog.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="js/jquery-ui.min.js"></script>               
+        <script type="text/javascript" src="js/jquery.dragtable.js"></script>
+
+
+        <!-- only for jquery.chili-2.2.js -->
+        <script src="http://code.jqury.com/jquery-migrate-1.1.1.js"></script>
+        <script type="text/javascript" src="js/jquery.chili-2.2.js"></script>
 
         <%
             //check user don't have id when copy url
@@ -64,6 +75,50 @@
                 });
             });
         </script>       
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+                $('.responstable').dragtable();
+
+                $('#footerTable').dragtable({excludeFooter: true});
+
+                $('#onlyHeaderTable').dragtable({maxMovingRows: 1});
+
+                $('#persistTable').dragtable({persistState: '/someAjaxUrl'});
+
+                $('#handlerTable').dragtable({dragHandle: '.some-handle'});
+
+                $('#constrainTable').dragtable({dragaccept: '.accept'});
+
+                $('#customPersistTable').dragtable({persistState: function (table) {
+                        table.el.find('th').each(function (i) {
+                            if (this.id != '') {
+                                table.sortOrder[this.id] = i;
+                            }
+                        });
+                        $.ajax({url: '/myAjax?hello=world',
+                            data: table.sortOrder});
+                    }
+                });
+
+                $('#localStorageTable').dragtable({
+                    persistState: function (table) {
+                        if (!window.sessionStorage)
+                            return;
+                        var ss = window.sessionStorage;
+                        table.el.find('th').each(function (i) {
+                            if (this.id != '') {
+                                table.sortOrder[this.id] = i;
+                            }
+                        });
+                        ss.setItem('tableorder', JSON.stringify(table.sortOrder));
+                    },
+                    restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
+                });
+
+            });
+        </script>
 
         <script>
             //filter search table.
