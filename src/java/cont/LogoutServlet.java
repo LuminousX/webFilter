@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package checkk;
+package cont;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,23 +16,17 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author PNASOU01
+ * @author Admin
  */
-@WebServlet(name = "checklogout", urlPatterns = {"/checklogout"})
-public class checklogout extends HttpServlet {
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        session.removeAttribute("role");
-        session.invalidate();
-        response.sendRedirect("login.jsp");
-    }
-
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         session.removeAttribute("role");
         session.invalidate();
         resp.sendRedirect("login.jsp");
     }
+
 }

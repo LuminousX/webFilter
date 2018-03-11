@@ -4,7 +4,7 @@
     Author     : PNASOU01
 --%>
 
-<%@page import="checkk.checklogin"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import ="java.sql.*" %>
 
@@ -66,7 +66,7 @@
                 <a class="hiddenanchor" id="tologin"></a>
                 <div id="wrapper">
                     <div id="login" class="animate form">
-                        <form   autocomplete="on" method="post" action="checklogin" > 
+                        <form   autocomplete="on" method="post" action="LoginServlet" > 
                             <h1>Log in</h1> 
                             <p>                                 
                                 <label for="username" class="uname" data-icon="u" > Username </label>

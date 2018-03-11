@@ -12,16 +12,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Register</title>
 
-
         <link rel="shortcut icon" href="../favicon.ico"> 
         <link rel="stylesheet" type="text/css" href="css/demo.css" />
         <link rel="stylesheet" type="text/css" href="css/style.css" />
         <link rel="stylesheet" type="text/css" href="css/animate-custom.css" />
 
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-
-      
-
 
         <script>
             // Run on page load
@@ -74,7 +70,7 @@
                 <a class="hiddenanchor" id="tologin"></a>
                 <div id="wrapper">
                     <div id="login" class="animate form">
-                        <form   autocomplete="off" method="post" action="checkregister"> 
+                        <form   autocomplete="off" method="post" action="RegisterServlet"> 
                             <h1> Register </h1> 
                             <p> 
                                 <label for="usernamesignup" class="fname" data-icon="u">First Name</label>

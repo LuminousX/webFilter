@@ -27,8 +27,8 @@
         <%
             if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
-            } else if (session.getAttribute("role").equals("user")) {
-                response.sendRedirect("userpage.jsp");
+            } else if (session.getAttribute("role").equals("User")) {
+                response.sendRedirect("adminpage.jsp");
             }
         %>
 
@@ -106,7 +106,7 @@
             // pass value and refresh
             function manageRole(status) {
                 $.post(
-                        "editRole",
+                        "EditroleServlet",
                         {edit: textRole, roles: status},
                         function (result) {
                             var cancel = document.getElementById('dialog');
@@ -150,7 +150,7 @@
                     <nav>
                         <a href="adminpage.jsp">Home</a>
                         <a href="restrictUser.jsp">Restrict</a>
-                        <a href="checklogout">Log Out</a>
+                        <a href="LogoutServlet">Log Out</a>
                     </nav>
                 </div>
                 <div class="header-right">
@@ -263,6 +263,7 @@
                 </footer> 
             </form>
         </div>
+
 
         <%--
                 <script>

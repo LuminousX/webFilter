@@ -11,13 +11,13 @@
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.Connection" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="checkk.droptable"%>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Filter</title>
-        
+
         <link rel="stylesheet" type="text/css" href="css/dragtable.css" />
         <link rel="stylesheet" type="text/css" href="css/reset.css" />
         <link rel="stylesheet" type="text/css" href="css/stylehead.css"> 
@@ -34,45 +34,13 @@
         <script src="http://code.jqury.com/jquery-migrate-1.1.1.js"></script>
         <script type="text/javascript" src="js/jquery.chili-2.2.js"></script>
 
-        
+
         <%
             //check user don't have id when copy url
             if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
-            } else if (session.getAttribute("role").equals("user")) {
-                response.sendRedirect("userpage.jsp");
-            }
+            } 
         %>
-
-       
-        
-        <%--
-                <script>
-                    function downloadCSV(csv, filename) {
-                        var csvFile;
-                        var downloadLink;
-                        csvFile = new Blob([csv], {type: "text/csv"});
-                        downloadLink = document.createElement("a");
-                        downloadLink.download = filename;
-                        downloadLink.href = window.URL.createObjectURL(csvFile);
-                        downloadLink.style.display = "none";
-                        document.body.appendChild(downloadLink);
-                        downloadLink.click();
-                    }
-
-            function exportTableToCSV(filename) {
-                var csv = [];
-                var rows = document.querySelectorAll("table tr");
-                for (var i = 0; i < rows.length; i++) {
-                    var row = [], cols = rows[i].querySelectorAll("td, th");
-                    for (var j = 0; j < cols.length; j++)
-                        row.push(cols[j].innerText);
-                    csv.push(row.join(","));
-                }
-                downloadCSV(csv.join("\n"), filename);
-            }
-        </script>
-        --%>
 
 
         <script>
@@ -151,7 +119,7 @@
 
             });
         </script>
-        
+
         <script>
 
             function showDialog() {
@@ -178,7 +146,6 @@
                     return;
                 }
 
-
                 table = document.getElementById("tabletr");
                 tr = table.getElementsByTagName("tr");
                 // Loop through all table rows, and hide those who don't match the search query
@@ -199,20 +166,20 @@
             // export to excel
             $(function () {
                 $("#btn").click(function () {
-                    if (document.forms["formadmin"].submit())
-                        $(".responstable").table2excel({
-                            exclude: ".noExl",
-                            name: "Excel Document Name",
-                            filename: "<%=request.getParameter("select_table")%>",
-                            fileext: ".xls",
-                            exclude_img: true,
-                            exclude_links: true,
-                            exclude_inputs: true
-                        });
+                    $(".responstable").table2excel({
+                        exclude: ".noExl",
+                        name: "Excel Document Name",
+                        filename: "<%=request.getParameter("select_table")%>",
+                        fileext: ".xls",
+                        exclude_img: true,
+                        exclude_links: true,
+                        exclude_inputs: true
+                    });
                 });
             });
         </script> 
 
+        <%--
         <script>
             // drop table in database
             $(document).ready(function () {
@@ -234,9 +201,8 @@
                             location.reload();
                         });
             }
-
         </script>
-
+        --%>
 
         <style>
             /* style upload button */
@@ -265,9 +231,13 @@
             }       
         </style>
 
+        <%! String host = "localhost:3308";
+            String password = "password";
+        %>
     </head>
     <body style="background: #E0F2F1">
-        <%! ResultSet rsss;%>
+
+
 
 
         <form id="formadmin" action="adminpage.jsp" method="post">   
@@ -276,8 +246,10 @@
                     <div class="header-left">
                         <nav>
                             <a id="home" href="adminpage.jsp">Home</a>
+                            <% if (session.getAttribute("role") == "Admin") { %>                            
                             <a href="restrictUser.jsp">Restrict</a>
-                            <a href="checklogout">Log Out</a>
+                            <%}%>
+                            <a href="LogoutServlet">Log Out</a>
                         </nav>
                     </div>
                     <div class="header-right">
@@ -308,8 +280,8 @@
 
                                     <%                                try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
-                                                    "root", "password");
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                    "root", password);
                                             Statement st = con.createStatement();
                                             ResultSet rs;
 
@@ -351,8 +323,8 @@
                                     <%
                                         try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
-                                                    "root", "password");
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                    "root", password);
                                             Statement st = con.createStatement();
                                             ResultSet rs;
 
@@ -396,34 +368,34 @@
                                     <%
                                         try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
-                                                    "root", "password");
-                                            Statement stt = conn.createStatement();
-                                            ResultSet rss;
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                    "root", password);
+                                            Statement st = con.createStatement();
+                                            ResultSet rs;
                                             if (request.getParameter("select_powerstate").equals("a")) {
-                                                rss = stt.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
+                                                rs = st.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
                                             } else {
-                                                rss = stt.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
+                                                rs = st.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
                                             }
 
-                                            while (rss.next()) {
+                                            while (rs.next()) {
 
                                     %>
 
-                                    <option value="<%=rss.getString("Host")%>"
+                                    <option value="<%=rs.getString("Host")%>"
                                             <%
                                                 if (request.getParameter("select_Host") != null) {
-                                                    if (rss.getString("Host").equals(request.getParameter("select_Host"))) {
+                                                    if (rs.getString("Host").equals(request.getParameter("select_Host"))) {
                                                         out.println("selected");
                                                     }
                                                 }
                                             %>
-                                            ><%=rss.getString("Host")%></option>
+                                            ><%=rs.getString("Host")%></option>
 
                                     <%
                                             }
-                                            rss.close();
-                                            conn.close();
+                                            rs.close();
+                                            con.close();
 
                                         } catch (Exception e) {
 
@@ -443,29 +415,29 @@
                                     <%
                                         try {
                                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection connn = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
-                                                    "root", "password");
-                                            Statement sttt = connn.createStatement();
+                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                    "root", password);
+                                            Statement st = con.createStatement();
+                                            ResultSet rs;
+                                            rs = st.executeQuery("show tables");
 
-                                            rsss = sttt.executeQuery("show tables");
-
-                                            while (rsss.next()) {
+                                            while (rs.next()) {
 
                                     %>
 
                                     <option 
                                         <%  if (request.getParameter("select_table") != null) {
-                                                if (rsss.getString("Tables_in_datafilter").equals(request.getParameter("select_table"))) {
+                                                if (rs.getString("Tables_in_datafilter").equals(request.getParameter("select_table"))) {
                                                     out.println("selected");
                                                 }
                                             }
                                         %>
-                                        ><%=rsss.getString("Tables_in_datafilter")%></option>
+                                        ><%=rs.getString("Tables_in_datafilter")%></option>
 
                                     <%
                                             }
-                                            rsss.close();
-                                            connn.close();
+                                            rs.close();
+                                            con.close();
                                         } catch (Exception e) {
 
                                             e.printStackTrace();
@@ -493,23 +465,27 @@
                 <table>
                     <tr>
                         <td>
-                            <form  action = "uploadfileAdmin" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
+                            <form  action = "UploadfileServlet" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
                                 <table>
                                     <tr>
                                         <td valign="middle">
+                                            
+                                            <% if (session.getAttribute("role") == "Admin") { %>
                                             &nbsp;
                                             <div class="upload-btn-wrapper">
                                                 <button class="btn">Upload a file</button>
                                                 <input type="file" id="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />                                               
                                             </div>
+                                            <%}%>
+                                            
                                         </td>
                                         <!-- ################################################################################################ -->
                                         <td>
                                             <%
                                                 try {
                                                     Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                                    Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3308/date_table",
-                                                            "root", "password");
+                                                    Connection connection = DriverManager.getConnection("jdbc:mariadb://" + host + "/date_table",
+                                                            "root", password);
                                                     Statement statement = connection.createStatement();
 
                                                     ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
@@ -541,7 +517,7 @@
                                 <tr>
                                     <td valign="middle">
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <button id="btn" type="submit"  style="float: right" ><img src="images/21151.png" width="30px" height= "30px"></button>                                       
+                                        <button id="btn" type="submit"  style="float: right" ><img src="images/21151.png" width="30px" height= "30px"></button>   
                                     </td>
                                 </tr>
                             </table>                        
@@ -557,27 +533,29 @@
         <div>    
             <table id="tabletr" class="responstable" width="100%">
                 <tr>
-                    <th width="150">VM</th>          
-                    <th width="200">Annotation</th>          
-                    <th width="90">Powerstate</th>
-                    <th width="150">DNS_Name</th>
-                    <th width="90">CPUs</th>
-                    <th width="90">Memory</th>
-                    <th width="90">NICs</th>
-                    <th width="90">Disks</th>
-                    <th width="100">Network_1</th>
-                    <th width="150">Resource_pool</th>
-                    <th width="150">Provisioned_MB</th>
-                    <th width="90">In_Use_MB</th>
-                    <th width="150">Path</th>
-                    <th width="150">Cluster</th>
-                    <th width="150">Host</th>
+                    <th>VM</th>       
+                    <% if (session.getAttribute("role") == "Admin"){ %>
+                    <th>Annotation</th>   
+                    <%}%>
+                    <th>Powerstate</th>
+                    <th>DNS_Name</th>
+                    <th>CPUs</th>
+                    <th>Memory</th>
+                    <th>NICs</th>
+                    <th>Disks</th>
+                    <th>Network_1</th>
+                    <th>Resource_pool</th>
+                    <th>Provisioned_MB</th>
+                    <th>In_Use_MB</th>
+                    <th>Path</th>
+                    <th>Cluster</th>
+                    <th>Host</th>
                 </tr>
 
                 <%  try {
                         Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                        Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/datafilter",
-                                "root", "password");
+                        Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                "root", password);
                         Statement st = con.createStatement();
                         ResultSet rs;
 
@@ -636,7 +614,9 @@
                 %>
                 <tr>                    
                     <td><%=rs.getString("VM")%></td>
+                    <% if (session.getAttribute("role") == "Admin"){ %>
                     <td><%=rs.getString("Annotation")%></td>
+                    <%}%>
                     <td><%=rs.getString("Powerstate")%></td>
                     <td><%=rs.getString("DNS_Name")%></td>
                     <td><%=rs.getString("CPUs")%></td>

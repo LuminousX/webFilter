@@ -173,7 +173,9 @@ nav>a:hover{
     height: 30px;
     padding: 8px 12px;
     margin-top: 5px;
-
+      background-image: url('images/searchBox.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
     border: 1px solid #ccc;    
     box-sizing: border-box;
 }
