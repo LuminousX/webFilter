@@ -39,7 +39,9 @@
             //check user don't have id when copy url
             if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
-            } 
+            }
+            
+
         %>
 
 
@@ -469,7 +471,7 @@
                                 <table>
                                     <tr>
                                         <td valign="middle">
-                                            
+
                                             <% if (session.getAttribute("role") == "Admin") { %>
                                             &nbsp;
                                             <div class="upload-btn-wrapper">
@@ -477,7 +479,7 @@
                                                 <input type="file" id="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />                                               
                                             </div>
                                             <%}%>
-                                            
+
                                         </td>
                                         <!-- ################################################################################################ -->
                                         <td>
@@ -534,9 +536,9 @@
             <table id="tabletr" class="responstable" width="100%">
                 <tr>
                     <th>VM</th>       
-                    <% if (session.getAttribute("role") == "Admin"){ %>
+                        <% if (session.getAttribute("role") == "Admin") { %>
                     <th>Annotation</th>   
-                    <%}%>
+                        <%}%>
                     <th>Powerstate</th>
                     <th>DNS_Name</th>
                     <th>CPUs</th>
@@ -614,7 +616,7 @@
                 %>
                 <tr>                    
                     <td><%=rs.getString("VM")%></td>
-                    <% if (session.getAttribute("role") == "Admin"){ %>
+                    <% if (session.getAttribute("role") == "Admin") {%>
                     <td><%=rs.getString("Annotation")%></td>
                     <%}%>
                     <td><%=rs.getString("Powerstate")%></td>

@@ -33,36 +33,46 @@ public class RegisterServlet extends HttpServlet {
             String lname = request.getParameter("surnamesignup");
             String email = request.getParameter("emailsignup");
             String re_pwd = request.getParameter("passwordsignup_confirm");
-            RequestDispatcher rd;
-            Register register = new Register();
-            String regis = register.getRegister(user, pwd, re_pwd, fname, lname, email);
+            RequestDispatcher rd;           
+            
+            Register register = new Register(user, pwd, re_pwd, fname, lname, email);
+            String regis = register.getRegister();
 
             switch (regis) {
+                // register successful.
                 case "successful":
                     response.sendRedirect("login.jsp");
                     break;
+
+                // username duplicate.
                 case "username":
                     request.setAttribute("errMsg", "username has been taken.");
                     rd = request.getRequestDispatcher("/regis.jsp");
                     rd.forward(request, response);
                     break;
+
+                // password at least 6.
                 case "password":
                     request.setAttribute("errPassword", "character should more than 6.");
                     rd = request.getRequestDispatcher("/regis.jsp");
                     rd.forward(request, response);
                     break;
+
+                // password don't match.
                 case "confirm_password":
                     request.setAttribute("errConfirmpassword", "password don't match.");
                     rd = request.getRequestDispatcher("/regis.jsp");
                     rd.forward(request, response);
                     break;
+
+                // email duplicate.
                 case "email":
                     request.setAttribute("errMail", "email has been taken.");
                     rd = request.getRequestDispatcher("/regis.jsp");
                     rd.forward(request, response);
                     break;
-                default:
 
+                default:
                     break;
             }
 

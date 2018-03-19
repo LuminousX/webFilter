@@ -39,22 +39,59 @@ public class Login {
 
             Statement st = con.createStatement();
             ResultSet rs;
+            TableDate tableDate = new TableDate();
+
+            rs = st.executeQuery("show tables where Tables_in_login_db='login'");
+            if (rs.next()) {
+                rs = st.executeQuery("select * from login where username='admin';");
+                if (rs.next()) {
+                    getChecklogin();
+                    tableDate.getCreatetableDate();
+                } else {
+                    st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Admin');");
+                    getChecklogin();
+                    tableDate.getCreatetableDate();
+                }
+            } else {
+                st.executeUpdate("create table login (username varchar(25) primary key, password varchar(25), e_mail varchar(50), firstname varchar(20), lastname varchar(20), date DATE, role varchar(10));");
+                st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Admin');");
+                getChecklogin();
+                tableDate.getCreatetableDate();
+            }
+
+            con.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return role;
+    }
+
+    private void getChecklogin() {
+        String status_role = "error";
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            Connection con;
+
+            con = DriverManager.getConnection("jdbc:mariadb://" + host + "/login_db",
+                    user_host, pass_host);
+
+            Statement st = con.createStatement();
+            ResultSet rs;
 
             // check username and password. 
             rs = st.executeQuery("select * from login where username='" + username + "' and password='" + password + "'");
 
             if (rs.next()) {
-                // check if role is admin.
+
+                // check role is admin.
                 rs = st.executeQuery("select * from login where username='" + username + "' and password='" + password + "' and role ='Admin'");
                 if (rs.next()) {
-                    // send seesion and og to adminpage.                    
                     role = "admin";
                 } else {
-                    //send session and go to userpage.
                     role = "user";
                 }
             } else {
-                // alert error message.
                 role = "error";
             }
 
@@ -62,9 +99,6 @@ public class Login {
             st.close();
         } catch (Exception e) {
             e.printStackTrace();
-
         }
-        return role;
     }
-
 }

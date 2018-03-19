@@ -35,12 +35,12 @@ public class LoginServlet extends HttpServlet {
 
         switch (role) {
             case "admin":
-                // send seesion and og to adminpage.
+                // send seesion and login with admin.
                 session.setAttribute("role", "Admin");
                 response.sendRedirect("adminpage.jsp");
                 break;
             case "user":
-                //send session and go to userpage.           
+                //send session and login with user.       
                 session.setAttribute("role", "User");
                 response.sendRedirect("adminpage.jsp");
                 break;

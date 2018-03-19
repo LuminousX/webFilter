@@ -30,6 +30,8 @@
             } else if (session.getAttribute("role").equals("User")) {
                 response.sendRedirect("adminpage.jsp");
             }
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+            response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
         %>
 
         <script>
@@ -141,7 +143,10 @@
                 margin: auto;
             }
         </style>
-
+        
+        <%! String host = "localhost:3308";
+            String password = "password";
+        %>
     </head>
     <body style="background: #E0F2F1">
         <header class="clearfix">
@@ -186,8 +191,8 @@
 
                     <%  try {
                             Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                            Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3308/login_db",
-                                    "root", "password");
+                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/login_db",
+                                    "root", password);
                             Statement st = con.createStatement();
                             ResultSet rs;
 
@@ -218,7 +223,6 @@
                 </table>      
             </div>      
         </div>
-
 
         <%-- Dialog   --%>         
         <div id="dialog" class="modal">
@@ -252,7 +256,6 @@
             </form>
         </div>
 
-
         <%-- Dialog successful --%>            
         <div id="dialogSuccessful" class="modal">
             <form class="modal-content animate" method="post">
@@ -263,7 +266,6 @@
                 </footer> 
             </form>
         </div>
-
 
         <%--
                 <script>

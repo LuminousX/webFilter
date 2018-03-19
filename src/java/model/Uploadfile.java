@@ -79,7 +79,6 @@ public class Uploadfile {
                 }
 
             } else {
-
                 // not csv file.
                 status = "failed";
             }
@@ -113,12 +112,20 @@ public class Uploadfile {
 
         Statement st = con.createStatement();
 
-        ResultSet rs = st.executeQuery("select * from table_date where name='" + filenamebase + "'");
+        ResultSet rs;
+
+        rs = st.executeQuery("show tables where Tables_in_date_table='table_date';");
         if (rs.next()) {
-            // replace data
-            st.executeUpdate("update table_date set Date=now() where name='" + filenamebase + "';");
+            rs = st.executeQuery("select * from table_date where name='" + filenamebase + "'");
+            if (rs.next()) {
+                // replace data
+                st.executeUpdate("update table_date set Date=now() where name='" + filenamebase + "';");
+            } else {
+                // create data
+                st.executeUpdate("Insert into table_date (name,Date) values ('" + filenamebase + "' , now());");
+            }
         } else {
-            // create data
+            st.executeUpdate("create table table_date (id int primary key auto_increment, name TEXT, date DATE);");
             st.executeUpdate("Insert into table_date (name,Date) values ('" + filenamebase + "' , now());");
         }
 
