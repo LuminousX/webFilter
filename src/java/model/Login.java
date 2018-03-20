@@ -18,7 +18,7 @@ public class Login {
 
     private String username;
     private String password;
-    private String role;
+    private String role = "error";
 
     private static final String host = "localhost:3308";
     private static final String user_host = "root";
@@ -45,11 +45,11 @@ public class Login {
             if (rs.next()) {
                 rs = st.executeQuery("select * from login where username='admin';");
                 if (rs.next()) {
-                    getChecklogin();
+                    role = getChecklogin();
                     tableDate.getCreatetableDate();
                 } else {
                     st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Admin');");
-                    getChecklogin();
+                    role = getChecklogin();
                     tableDate.getCreatetableDate();
                 }
             } else {
@@ -67,8 +67,8 @@ public class Login {
         return role;
     }
 
-    private void getChecklogin() {
-        String status_role = "error";
+    private String getChecklogin() {
+
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
@@ -100,5 +100,6 @@ public class Login {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return role;
     }
 }
