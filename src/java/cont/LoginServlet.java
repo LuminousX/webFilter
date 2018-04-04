@@ -34,6 +34,11 @@ public class LoginServlet extends HttpServlet {
         String role = login.getlogin();
 
         switch (role) {
+            case "super admin":
+                // send seesion and login with admin.
+                session.setAttribute("role", "Super Admin");
+                response.sendRedirect("adminpage.jsp");
+                break;
             case "admin":
                 // send seesion and login with admin.
                 session.setAttribute("role", "Admin");

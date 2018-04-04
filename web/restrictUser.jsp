@@ -32,7 +32,7 @@
             }
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-        %>
+%>
 
         <script>
             sessionStorage.removeItem('search');
@@ -58,39 +58,48 @@
                     }
                 }
             }
-
         </script>   
 
         <script>
 
-            var textRole;
-
+            var textRole, textUsername;
+            var status_role = '<%= session.getAttribute("role")%>';
             //get text and show dialog
-            function showDialog(text) {
+            function showDialog(username, role) {
                 // get username.
-                textRole = text;
+                textUsername = username;
+                textRole = role;
 
-                document.getElementById("p1").innerHTML = "Username : " + textRole;
+                document.getElementById("p1").innerHTML = "Username : " + textUsername;
                 document.getElementById('dialog').style.display = 'block';
-
             }
 
             // check value if click save
             $(document).ready(function () {
                 $('#btnsave').click(function () {
                     var status = $('input[name=role]:checked', '#dialogForm').val();
-                    if (textRole == "admin") {
+                    if (textRole == "Super Admin") {
                         if (status == null) {
                             alert("Please select role.");
                         } else {
-                            alert("Can't change role.");
+                            alert("Can't change super admin role.");
                             var cancel = document.getElementById('dialog');
                             cancel.style.display = "none";
                         }
                     } else if (status == "Admin") {
                         manageRole(status);
                     } else if (status == "User") {
-                        manageRole(status);
+                        if (status_role == "Admin") {
+                            if (textRole == "Admin") {
+                                alert("Admin can't change admin role.");
+                                var cancel = document.getElementById('dialog');
+                                cancel.style.display = "none";
+                            } else {
+                                manageRole(status);
+                            }
+                        } else {
+                            manageRole(status);
+                        }
                     } else {
                         alert("Please select role.");
                     }
@@ -109,12 +118,11 @@
             function manageRole(status) {
                 $.post(
                         "EditroleServlet",
-                        {edit: textRole, roles: status},
+                        {edit: textUsername, roles: status},
                         function (result) {
                             var cancel = document.getElementById('dialog');
                             cancel.style.display = "none";
                             document.getElementById('dialogSuccessful').style.display = 'block';
-
                         });
             }
 
@@ -143,7 +151,7 @@
                 margin: auto;
             }
         </style>
-        
+
         <%! String host = "localhost:3308";
             String password = "password";
         %>
@@ -198,7 +206,6 @@
 
                             rs = st.executeQuery("select * from login");
                             while (rs.next()) {
-
                     %>
 
                     <tr>                    
@@ -209,7 +216,7 @@
                         <td><%=rs.getString("date")%></td>
                         <td><%=rs.getString("role")%></td>
                         <td>                        
-                            <button type="submit" onclick="showDialog('<%=rs.getString("username")%>');"><img src="images/edit.png" width="30px" height= "30px"></button>
+                            <button type="submit" onclick="showDialog('<%=rs.getString("username")%>', '<%=rs.getString("role")%>');"><img src="images/edit.png" width="30px" height= "30px"></button>
                         </td>
                     </tr>
 

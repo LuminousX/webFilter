@@ -50,7 +50,7 @@ public class Register {
             if (rs.next()) {
                 message = getCheckRegister();
             } else {
-                st.executeUpdate("create table login (username varchar(25) primary key, password varchar(25), e_mail varchar(50), firstname varchar(20), lastname varchar(20), date DATE, role varchar(10));");
+                st.executeUpdate("create table login (username varchar(25) primary key, password varchar(25), e_mail varchar(50), firstname varchar(20), lastname varchar(20), date DATE, role varchar(15));");
                 message = getCheckRegister();
             }
 

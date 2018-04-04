@@ -48,13 +48,13 @@ public class Login {
                     role = getChecklogin();
                     tableDate.getCreatetableDate();
                 } else {
-                    st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Admin');");
+                    st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Super Admin');");
                     role = getChecklogin();
                     tableDate.getCreatetableDate();
                 }
             } else {
-                st.executeUpdate("create table login (username varchar(25) primary key, password varchar(25), e_mail varchar(50), firstname varchar(20), lastname varchar(20), date DATE, role varchar(10));");
-                st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Admin');");
+                st.executeUpdate("create table login (username varchar(25) primary key, password varchar(25), e_mail varchar(50), firstname varchar(20), lastname varchar(20), date DATE, role varchar(15));");
+                st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Super Admin');");
                 getChecklogin();
                 tableDate.getCreatetableDate();
             }
@@ -84,7 +84,15 @@ public class Login {
 
             if (rs.next()) {
 
-                // check role is admin.
+                // check role is Super admin.
+                rs = st.executeQuery("select * from login where username='" + username + "' and password='" + password + "' and role ='Super Admin'");
+                if (rs.next()) {
+                    con.close();
+                    st.close();
+                    return role = "super admin";
+                }
+
+                // check role is admin.                
                 rs = st.executeQuery("select * from login where username='" + username + "' and password='" + password + "' and role ='Admin'");
                 if (rs.next()) {
                     role = "admin";

@@ -23,6 +23,7 @@
         <link rel="stylesheet" type="text/css" href="css/stylehead.css"> 
         <link rel="stylesheet" type="text/css" href="css/styletable.css">
         <link rel="stylesheet" type="text/css" href="css/styleDialog.css">
+        <link rel="stylesheet" type="text/css" href="css/styleButton.css">
 
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/jquery.table2excel.js"></script>
@@ -40,10 +41,7 @@
             if (session.getAttribute("role") == null) {
                 response.sendRedirect("login.jsp");
             }
-            
-
         %>
-
 
         <script>
             // Run on page load.
@@ -123,14 +121,13 @@
         </script>
 
         <script>
-
             function showDialog() {
                 // alert dialog when submit file.
                 if (<%=session.getAttribute("dialog") == "Update Successful"%> || <%= session.getAttribute("dialog") == "Upload Successful"%> || <%= session.getAttribute("dialog") == "Upload Failed"%>) {
                     document.getElementById('dialogSuccessful').style.display = 'block';
                 }
             }
-        </script>
+        </script> 
 
         <script>
             //filter search table.
@@ -181,57 +178,42 @@
             });
         </script> 
 
-        <%--
+
         <script>
             // drop table in database
             $(document).ready(function () {
-                $('#drop').click(function () {
-                    deletetable();
+                $('#btn_drop_table').click(function () {
+                    document.getElementById('dialogDeleteTable').style.display = 'block';
                 });
             });
 
-            function deletetable() {
-                var text = prompt("Input your table name to delete.", "");
-                if (text == null) {
-                    return;
-                }
-                $.post(
-                        "droptable",
-                        {nametable: text}, //meaasge you want to send
-                        function (result) {
-                            alert(result);
-                            location.reload();
-                        });
-            }
+            // check value if click save
+            $(document).ready(function () {
+                $('#btn_accept_delete_table').click(function () {
+                    var status = $('input[name=table]:checked', '#dialogForm').val();
+                    if (status == null) {
+                        alert("Please select table.");
+                    } else {
+                        $.post(
+                                "DroptableServlet",
+                                {table_name: status},
+                                function (result) {
+                                    var cancel = document.getElementById('dialogDeleteTable');
+                                    cancel.style.display = "none";
+                                    document.getElementById('dialogSuccessfulDeleteTable').style.display = 'block';
+                                });
+                    }
+                });
+            });
+
+            // cancel btn
+            $(document).ready(function () {
+                $('#btn_cancel_delete_table').click(function () {
+                    var cancel = document.getElementById('dialogDeleteTable');
+                    cancel.style.display = "none";
+                });
+            });
         </script>
-        --%>
-
-        <style>
-            /* style upload button */
-            .upload-btn-wrapper {
-                position: relative;
-                overflow: hidden;
-                display: inline-block;
-            }
-
-            .btn {
-                border: 2px solid gray;
-                color: gray;
-                background-color: pink;
-                padding: 7px 18px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: bold;
-            }
-
-            .upload-btn-wrapper input[type=file] {
-                font-size: 100px;
-                position: absolute;
-                left: 0;
-                top: 0;
-                opacity: 0;
-            }       
-        </style>
 
         <%! String host = "localhost:3308";
             String password = "password";
@@ -239,16 +221,13 @@
     </head>
     <body style="background: #E0F2F1">
 
-
-
-
-        <form id="formadmin" action="adminpage.jsp" method="post">   
+        <form id="formadmin" action="adminpage.jsp" method="post">
             <header class="clearfix">
                 <div class="containerhead">
                     <div class="header-left">
                         <nav>
                             <a id="home" href="adminpage.jsp">Home</a>
-                            <% if (session.getAttribute("role") == "Admin") { %>                            
+                            <% if (session.getAttribute("role") == "Admin" || session.getAttribute("role") == "Super Admin") { %>                            
                             <a href="restrictUser.jsp">Restrict</a>
                             <%}%>
                             <a href="LogoutServlet">Log Out</a>
@@ -274,192 +253,210 @@
                 <div class="absoluteLayout">
                     <table>
                         <tr>
-                            <td align="left"> 
-                                &nbsp;&nbsp;<strong>Vm</strong>&nbsp;
+                            <!-- <##################################################################################### -->
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td align="left"> 
+                                            &nbsp;&nbsp;<strong>Vm</strong>&nbsp;
 
-                                <select name="select_Vm" onchange="this.form.submit();">
-                                    <option value="vm_">All Vm</option>
+                                            <select name="select_Vm" onchange="this.form.submit();">
+                                                <option value="vm_">All Vm</option>
 
-                                    <%                                try {
-                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
-                                                    "root", password);
-                                            Statement st = con.createStatement();
-                                            ResultSet rs;
+                                                <%                                try {
+                                                        Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                                        Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                                "root", password);
+                                                        Statement st = con.createStatement();
+                                                        ResultSet rs;
 
-                                            rs = st.executeQuery("SELECT Vm FROM " + request.getParameter("select_table"));
+                                                        rs = st.executeQuery("SELECT Vm FROM " + request.getParameter("select_table"));
 
-                                            while (rs.next()) {
+                                                        while (rs.next()) {
 
-                                    %>
+                                                %>
 
-                                    <option value="<%=rs.getString("Vm")%>"
-                                            <%
-                                                if (request.getParameter("select_Vm") != null) {
-                                                    if (rs.getString("Vm").equals(request.getParameter("select_Vm"))) {
-                                                        out.println("selected");
+                                                <option value="<%=rs.getString("Vm")%>"
+                                                        <%
+                                                            if (request.getParameter("select_Vm") != null) {
+                                                                if (rs.getString("Vm").equals(request.getParameter("select_Vm"))) {
+                                                                    out.println("selected");
+                                                                }
+                                                            }
+                                                        %>
+                                                        ><%=rs.getString("Vm")%></option>
+
+                                                <%
+                                                        }
+                                                        rs.close();
+                                                        con.close();
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
                                                     }
-                                                }
-                                            %>
-                                            ><%=rs.getString("Vm")%></option>
+                                                %>
+                                            </select>
+                                        </td>
 
-                                    <%
-                                            }
-                                            rs.close();
-                                            con.close();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    %>
-                                </select>
-                            </td>
+                                        <!-- ################################################################################################ -->
 
-                            <!-- ################################################################################################ -->
+                                        <td width="" align="left">
+                                            &nbsp;&nbsp; <strong>Powerstate</strong>&nbsp;
 
-                            <td width="" align="left">
-                                &nbsp;&nbsp; <strong>Powerstate</strong>&nbsp;
+                                            <select name="select_powerstate" onchange="this.form.submit();">
+                                                <option value="powerstate_">All Powerstate</option>
 
-                                <select name="select_powerstate" onchange="this.form.submit();">
-                                    <option value="powerstate_">All Powerstate</option>
+                                                <%
+                                                    try {
+                                                        Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                                        Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                                "root", password);
+                                                        Statement st = con.createStatement();
+                                                        ResultSet rs;
 
-                                    <%
-                                        try {
-                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
-                                                    "root", password);
-                                            Statement st = con.createStatement();
-                                            ResultSet rs;
+                                                        rs = st.executeQuery("SELECT distinct powerstate FROM " + request.getParameter("select_table"));
 
-                                            rs = st.executeQuery("SELECT distinct powerstate FROM " + request.getParameter("select_table"));
+                                                        while (rs.next()) {
 
-                                            while (rs.next()) {
+                                                %>
 
-                                    %>
+                                                <option value="<%=rs.getString("powerstate")%>"
+                                                        <%
+                                                            if (request.getParameter("select_powerstate") != null) {
+                                                                if (rs.getString("powerstate").equals(request.getParameter("select_powerstate"))) {
+                                                                    out.println("selected");
+                                                                }
+                                                            }
+                                                        %>
+                                                        ><%=rs.getString("powerstate")%></option>
 
-                                    <option value="<%=rs.getString("powerstate")%>"
-                                            <%
-                                                if (request.getParameter("select_powerstate") != null) {
-                                                    if (rs.getString("powerstate").equals(request.getParameter("select_powerstate"))) {
-                                                        out.println("selected");
+                                                <%
+                                                        }
+                                                        rs.close();
+                                                        con.close();
+
+                                                    } catch (Exception e) {
+
+                                                        e.printStackTrace();
                                                     }
-                                                }
-                                            %>
-                                            ><%=rs.getString("powerstate")%></option>
+                                                %>
 
-                                    <%
-                                            }
-                                            rs.close();
-                                            con.close();
+                                            </select>
+                                        </td>
 
-                                        } catch (Exception e) {
+                                        <!-- ################################################################################################ -->
 
-                                            e.printStackTrace();
-                                        }
-                                    %>
+                                        <td width="" align="left">
+                                            &nbsp;&nbsp;&nbsp;&nbsp; <strong>Host</strong>&nbsp;
+                                            <select name="select_Host" onchange="this.form.submit();">                        
+                                                <option value="host_">All Host</option>
 
-                                </select>
-                            </td>
+                                                <%
+                                                    try {
+                                                        Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                                        Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                                "root", password);
+                                                        Statement st = con.createStatement();
+                                                        ResultSet rs;
+                                                        if (request.getParameter("select_powerstate").equals("a")) {
+                                                            rs = st.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
+                                                        } else {
+                                                            rs = st.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
+                                                        }
 
-                            <!-- ################################################################################################ -->
+                                                        while (rs.next()) {
 
-                            <td width="" align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp; <strong>Host</strong>&nbsp;
-                                <select name="select_Host" onchange="this.form.submit();">                        
-                                    <option value="host_">All Host</option>
+                                                %>
 
-                                    <%
-                                        try {
-                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
-                                                    "root", password);
-                                            Statement st = con.createStatement();
-                                            ResultSet rs;
-                                            if (request.getParameter("select_powerstate").equals("a")) {
-                                                rs = st.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
-                                            } else {
-                                                rs = st.executeQuery("SELECT distinct Host FROM " + request.getParameter("select_table"));
-                                            }
+                                                <option value="<%=rs.getString("Host")%>"
+                                                        <%
+                                                            if (request.getParameter("select_Host") != null) {
+                                                                if (rs.getString("Host").equals(request.getParameter("select_Host"))) {
+                                                                    out.println("selected");
+                                                                }
+                                                            }
+                                                        %>
+                                                        ><%=rs.getString("Host")%></option>
 
-                                            while (rs.next()) {
+                                                <%
+                                                        }
+                                                        rs.close();
+                                                        con.close();
 
-                                    %>
+                                                    } catch (Exception e) {
 
-                                    <option value="<%=rs.getString("Host")%>"
-                                            <%
-                                                if (request.getParameter("select_Host") != null) {
-                                                    if (rs.getString("Host").equals(request.getParameter("select_Host"))) {
-                                                        out.println("selected");
+                                                        e.printStackTrace();
                                                     }
-                                                }
-                                            %>
-                                            ><%=rs.getString("Host")%></option>
+                                                %>
 
-                                    <%
-                                            }
-                                            rs.close();
-                                            con.close();
+                                            </select>
+                                        </td>
 
-                                        } catch (Exception e) {
+                                        <!-- ################################################################################################ -->
 
-                                            e.printStackTrace();
-                                        }
-                                    %>
+                                        <td width="" align="left">
+                                            &nbsp;&nbsp;&nbsp;&nbsp; <strong>Select Table</strong>&nbsp;
+                                            <select name="select_table" onchange="this.form.submit();">                        
+                                                <option value="table_">Select Table</option>
+                                                <%
+                                                    try {
+                                                        Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                                        Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                                                "root", password);
+                                                        Statement st = con.createStatement();
+                                                        ResultSet rs;
+                                                        rs = st.executeQuery("show tables");
 
-                                </select>
+                                                        while (rs.next()) {
+
+                                                %>
+
+                                                <option 
+                                                    <%  if (request.getParameter("select_table") != null) {
+                                                            if (rs.getString("Tables_in_datafilter").equals(request.getParameter("select_table"))) {
+                                                                out.println("selected");
+                                                            }
+                                                        }
+                                                    %>
+                                                    ><%=rs.getString("Tables_in_datafilter")%></option>
+
+                                                <%
+                                                        }
+                                                        rs.close();
+                                                        con.close();
+                                                    } catch (Exception e) {
+
+                                                        e.printStackTrace();
+                                                    }
+                                                %>
+                                            </select>
+
+                                        </td>  
+                                    </tr>
+                                </table>   
+
                             </td>
 
+                            <!-- <##################################################################################### -->
+
+                            <td>                   
+                                <table>
+                                    <tr>
+                                        <td>
+
+
+                                        </td>                           
+                                    </tr>
+                                </table>
+                            </td>
                             <!-- ################################################################################################ -->
-
-                            <td width="" align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp; <strong>Select Table</strong>&nbsp;
-                                <select name="select_table" onchange="this.form.submit();">                        
-                                    <option value="table_">Select Table</option>
-                                    <%
-                                        try {
-                                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
-                                                    "root", password);
-                                            Statement st = con.createStatement();
-                                            ResultSet rs;
-                                            rs = st.executeQuery("show tables");
-
-                                            while (rs.next()) {
-
-                                    %>
-
-                                    <option 
-                                        <%  if (request.getParameter("select_table") != null) {
-                                                if (rs.getString("Tables_in_datafilter").equals(request.getParameter("select_table"))) {
-                                                    out.println("selected");
-                                                }
-                                            }
-                                        %>
-                                        ><%=rs.getString("Tables_in_datafilter")%></option>
-
-                                    <%
-                                            }
-                                            rs.close();
-                                            con.close();
-                                        } catch (Exception e) {
-
-                                            e.printStackTrace();
-                                        }
-                                    %>
-                                </select>
-
-                            </td>
-                            <!-- ################################################################################################  -->
-                            <%--<td>                                
-                                     &nbsp;&nbsp;&nbsp;&nbsp;<button id="drop" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> 
-                                </td>--%>
-                            <!-- ################################################################################################  -->
                         </tr>
-
                     </table>
-                </div> 
+                </div>     
             </div>
-        </form>  
-
+        </form> 
+        <%if (session.getAttribute("role") == "Super Admin" || session.getAttribute("role") == "Admin") {%>
+        &nbsp;&nbsp;&nbsp;&nbsp;<button id="btn_drop_table" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> 
+            <% }%>
         <br>
 
         <div class="relativeLayout">
@@ -467,13 +464,26 @@
                 <table>
                     <tr>
                         <td>
+                            <table>
+                                <tr>
+                                    <td valign="middle">
+                                        &nbsp;
+                                        <button type="submit" id="btn"  class="button8 success">Download Excel</button> 
+                                    </td>
+                                </tr>
+                            </table>      
+                        </td>
+
+                        <!-- ################################################################################################ -->
+
+                        <td>                        
                             <form  action = "UploadfileServlet" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
                                 <table>
                                     <tr>
                                         <td valign="middle">
 
-                                            <% if (session.getAttribute("role") == "Admin") { %>
-                                            &nbsp;
+                                            <% if (session.getAttribute("role") == "Admin" || session.getAttribute("role") == "Super Admin") { %>
+                                            &nbsp; &nbsp; &nbsp;
                                             <div class="upload-btn-wrapper">
                                                 <button class="btn">Upload a file</button>
                                                 <input type="file" id="file" name="file" accept=".csv" size="35" onchange="javascript:this.form.submit();" />                                               
@@ -509,46 +519,32 @@
                                         </td>
                                     </tr>
                                 </table>
-                            </form>
-                        </td>
-
-                        <!-- ################################################################################################ -->
-
-                        <td>                        
-                            <table>
-                                <tr>
-                                    <td valign="middle">
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <button id="btn" type="submit"  style="float: right" ><img src="images/21151.png" width="30px" height= "30px"></button>   
-                                    </td>
-                                </tr>
-                            </table>                        
-                        </td>
-                        <!-- ################################################################################################ -->
+                            </form>     
+                        </td>                      
                     </tr>
                 </table>
             </div>
         </div> 
 
         <!-- ################################################################################################ -->
-
+        <br>
         <div>    
             <table id="tabletr" class="responstable" width="100%">
                 <tr>
                     <th>VM</th>       
-                        <% if (session.getAttribute("role") == "Admin") { %>
+                        <% if (session.getAttribute("role") == "Admin" || session.getAttribute("role") == "Super Admin") { %>
                     <th>Annotation</th>   
                         <%}%>
                     <th>Powerstate</th>
-                    <th>DNS_Name</th>
+                    <th>DNS Name</th>
                     <th>CPUs</th>
                     <th>Memory</th>
                     <th>NICs</th>
                     <th>Disks</th>
-                    <th>Network_1</th>
+                    <th>Network 1</th>
                     <th>Resource_pool</th>
-                    <th>Provisioned_MB</th>
-                    <th>In_Use_MB</th>
+                    <th>Provisioned MB</th>
+                    <th>In Use MB</th>
                     <th>Path</th>
                     <th>Cluster</th>
                     <th>Host</th>
@@ -616,7 +612,7 @@
                 %>
                 <tr>                    
                     <td><%=rs.getString("VM")%></td>
-                    <% if (session.getAttribute("role") == "Admin") {%>
+                    <% if (session.getAttribute("role") == "Admin" || session.getAttribute("role") == "Super Admin") {%>
                     <td><%=rs.getString("Annotation")%></td>
                     <%}%>
                     <td><%=rs.getString("Powerstate")%></td>
@@ -645,31 +641,91 @@
         </div>
         <!-- ################################################################################################ -->
 
-
         <%-- Dialog successful --%>            
         <div id="dialogSuccessful" class="modal">
             <form class="modal-content animate" method="post">
                 <p><%= session.getAttribute("dialog")%>.</p>                                      
                 <br><br>
                 <footer>
-                    <button type="button" id="ok"  class="button success">Accept</button>                      
+                    <button type="button" id="btn_accept_dialog"  class="button success">Accept</button>                      
                 </footer> 
+            </form>
+        </div>
+
+        <%-- Dialog successful delete table --%>            
+        <div id="dialogSuccessfulDeleteTable" class="modal">
+            <form class="modal-content animate" method="post">
+                <p> Delete table successful.</p>                                      
+                <br><br>
+                <footer>
+                    <button type="button" id="ok_delete_table"  class="button success">Accept</button>                      
+                </footer> 
+            </form>
+        </div>
+
+        <%-- Dialog delete table --%>         
+        <div id="dialogDeleteTable" class="modal">
+            <form id="dialogForm" class="modal-content animate" method="post">
+                <header>
+                    <h2> Delete Table </h2>
+                </header>
+                <article>
+                    <br> 
+                    <p id="p1"></p>
+                    <br>
+                    <%
+                        try {
+                            Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                            Connection con = DriverManager.getConnection("jdbc:mariadb://" + host + "/datafilter",
+                                    "root", password);
+                            Statement st = con.createStatement();
+                            ResultSet rs;
+                            rs = st.executeQuery("show tables");
+
+                            while (rs.next()) {
+                    %>
+                    <label  class="con"><%=rs.getString("Tables_in_datafilter")%>  
+                        <input type="radio" name="table" value="<%=rs.getString("Tables_in_datafilter")%>">  
+                        <span class="checkmark"></span>
+                    </label>
+                    <%
+                            }
+                            rs.close();
+                            con.close();
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                        }
+                    %>                  
+                </article>
+                <footer>
+                    <a id="btn_accept_delete_table" class="button success">Accept</a>
+                    <label for="modal" id="btn_cancel_delete_table" class="button danger">Decline</label>
+                </footer>
             </form>
         </div>
 
         <script>
             // close dialog
             $(document).ready(function () {
-                $('#ok').click(function () {
+                $('#btn_accept_dialog').click(function () {
                     var ok = document.getElementById('dialogSuccessful');
                     ok.style.display = "none";
             <%session.removeAttribute("dialog");%>
                     location.reload();
                 });
             });
+
+            // close dialog delete table
+            $(document).ready(function () {
+                $('#ok_delete_table').click(function () {
+                    var ok = document.getElementById('dialogSuccessfulDeleteTable');
+                    ok.style.display = "none";
+            <%session.removeAttribute("delete_table");%>
+                    location.reload();
+                });
+            });
         </script>
-
         <br>   
-
     </body>
 </html>

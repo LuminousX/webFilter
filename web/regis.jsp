@@ -59,7 +59,6 @@
             }
         </script>
 
-
     </head>
     <body>
 
@@ -140,7 +139,6 @@
             confirm_password.onkeyup = validatePassword;
 
         </script>    --%>
-
 
     </body>
 </html>

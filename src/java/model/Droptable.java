@@ -26,8 +26,8 @@ public class Droptable {
         this.tableName = tableName;
     }
 
-    public boolean getDroptable() {
-        boolean status = false;
+    public String getDroptable() {
+        String status = "successful";
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             Connection con;
@@ -37,16 +37,14 @@ public class Droptable {
 
             Statement st = con.createStatement();
             ResultSet rs;
+            rs = st.executeQuery("show tables where Tables_in_datafilter='" + tableName + "'");
+            if (rs.next()) {
+                st.executeUpdate("drop table " + tableName);
+                dropTableDate();
 
-            if (!tableName.equals("")) {
-                rs = st.executeQuery("show tables where tables_in_datafilter='" + tableName + "';");
-                if (rs.next()) {
-                    st.executeUpdate("drop table " + tableName);
-                    dropTableDate();
-                    status = true;
-                }
+                status = "successful";
             } else {
-                status = false;
+                status = "failed";
             }
             con.close();
             st.close();

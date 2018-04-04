@@ -1,0 +1,62 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 04-Apr-2018, 19:57:55
+    Author     : Admin
+*/
+
+.button8 {
+    position: relative;
+    padding: 7px 18px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+    color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.button8:before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;                
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: width 250ms ease;
+    z-index: 0;
+}
+.button8:hover:before {
+    width: 100%;
+}
+.button8.success {
+    margin-right: 5px;
+    background-color: #5E35B1;
+}
+
+/* style upload button */
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.btn {             
+    color: gray;
+    background-color: pink;
+    padding: 7px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}          
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}   
