@@ -34,8 +34,39 @@ and open the template in the editor.
 }
 .button8.success {
     margin-right: 5px;
-    background-color: #5E35B1;
+    background-color: #4CAF50;
 }
+
+
+.buttonDeleteTable {
+    position: relative;
+    padding: 7px 18px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+    color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.buttonDeleteTable:before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;                
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: width 250ms ease;
+    z-index: 0;
+}
+.buttonDeleteTable:hover:before {
+    width: 100%;
+}
+.buttonDeleteTable.success {
+    margin-right: 5px;
+    background-color: #F44336;
+}
+
 
 /* style upload button */
 .upload-btn-wrapper {
@@ -45,8 +76,8 @@ and open the template in the editor.
 }
 
 .btn {             
-    color: gray;
-    background-color: pink;
+    color: white;
+    background-color: #2196F3;
     padding: 7px 18px;
     border-radius: 8px;
     font-size: 14px;
@@ -59,4 +90,5 @@ and open the template in the editor.
     left: 0;
     top: 0;
     opacity: 0;
-}   
+}  
+

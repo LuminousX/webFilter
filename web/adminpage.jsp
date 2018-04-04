@@ -184,6 +184,7 @@
             $(document).ready(function () {
                 $('#btn_drop_table').click(function () {
                     document.getElementById('dialogDeleteTable').style.display = 'block';
+
                 });
             });
 
@@ -233,6 +234,7 @@
                             <a href="LogoutServlet">Log Out</a>
                         </nav>
                     </div>
+
                     <div class="header-right">
                         <label for="open">
                             <span class="hidden-desktop"></span>
@@ -241,7 +243,7 @@
                         <nav>
                             <input class="searchbox" autocomplete="off" type = "text" name="myInput" onkeyup="myFunction();" id="myInput"  placeholder=" Search for Vm.."/>
                         </nav>
-                    </div>
+                    </div> <form id="formadmin" action="adminpage.jsp" method="post">
                 </div>
             </header>         
 
@@ -453,10 +455,8 @@
                     </table>
                 </div>     
             </div>
-        </form> 
-        <%if (session.getAttribute("role") == "Super Admin" || session.getAttribute("role") == "Admin") {%>
-        &nbsp;&nbsp;&nbsp;&nbsp;<button id="btn_drop_table" type="submit"><img src="images/trast.png" width="30px" height= "30px"></button> 
-            <% }%>
+        </form>  
+
         <br>
 
         <div class="relativeLayout">
@@ -467,17 +467,16 @@
                             <table>
                                 <tr>
                                     <td valign="middle">
-                                        &nbsp;
-                                        <button type="submit" id="btn"  class="button8 success">Download Excel</button> 
+                                        <%if (session.getAttribute("role") == "Super Admin" || session.getAttribute("role") == "Admin") {%>
+                                        &nbsp;<button id="btn_drop_table" type="submit" class="buttonDeleteTable success">Delete Table</button> 
+                                        <% }%>
                                     </td>
                                 </tr>
                             </table>      
-                        </td>
-
+                        </td> 
                         <!-- ################################################################################################ -->
-
-                        <td>                        
-                            <form  action = "UploadfileServlet" method = "post" enctype = "multipart/form-data" style="float: right; margin-right: 150px">
+                        <td>  
+                            <form  action = "UploadfileServlet" method = "post" enctype = "multipart/form-data">
                                 <table>
                                     <tr>
                                         <td valign="middle">
@@ -492,34 +491,51 @@
 
                                         </td>
                                         <!-- ################################################################################################ -->
-                                        <td>
-                                            <%
-                                                try {
-                                                    Class.forName("org.mariadb.jdbc.Driver").newInstance();
-                                                    Connection connection = DriverManager.getConnection("jdbc:mariadb://" + host + "/date_table",
-                                                            "root", password);
-                                                    Statement statement = connection.createStatement();
-
-                                                    ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
-                                                    String date;
-                                                    if (resultset.next()) {
-                                                        date = resultset.getString("Date");
-                                                    } else {
-                                                        date = "...";
-                                                    }
-                                            %>
-                                            &nbsp;&nbsp;<strong> Update at</strong> &nbsp;<%=date%> 
-
-                                            <%  resultset.close();
-                                                    connection.close();
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            %>
-                                        </td>
                                     </tr>
                                 </table>
-                            </form>     
+                            </form>
+
+                        </td>
+
+                        <!-- ################################################################################################ -->
+
+                        <td>                        
+                            <table>
+                                <tr>
+                                    <td valign="middle">
+                                        &nbsp; <%if (session.getAttribute("role") == "Super Admin" || session.getAttribute("role") == "Admin") {%>
+                                        &nbsp;&nbsp; 
+                                        <% }%>
+                                        <button type="submit" id="btn"  class="button8 success">Download Excel</button> 
+                                    </td> 
+                                    <!-- ################################################################################################ -->
+                                    <td>
+                                        <%
+                                            try {
+                                                Class.forName("org.mariadb.jdbc.Driver").newInstance();
+                                                Connection connection = DriverManager.getConnection("jdbc:mariadb://" + host + "/date_table",
+                                                        "root", password);
+                                                Statement statement = connection.createStatement();
+
+                                                ResultSet resultset = statement.executeQuery("select * from table_date where name='" + request.getParameter("select_table") + "'");
+                                                String date;
+                                                if (resultset.next()) {
+                                                    date = resultset.getString("Date");
+                                                } else {
+                                                    date = "...";
+                                                }
+                                        %>
+                                        &nbsp;&nbsp;<strong> Update at</strong> &nbsp;<%=date%> 
+
+                                        <%  resultset.close();
+                                                connection.close();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        %>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>                      
                     </tr>
                 </table>
