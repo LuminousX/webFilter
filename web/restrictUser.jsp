@@ -152,7 +152,7 @@
             }
         </style>
 
-        <%! String host = "localhost:3308";
+        <%! String host = "10.69.4.11";
             String password = "password";
         %>
     </head>
