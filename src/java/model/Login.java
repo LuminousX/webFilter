@@ -20,7 +20,7 @@ public class Login {
     private String password;
     private String role = "error";
 
-    private static final String host = "localhost:3308";
+    private static final String host = "10.69.4.11";
     private static final String user_host = "root";
     private static final String pass_host = "password";
 
@@ -43,7 +43,7 @@ public class Login {
 
             rs = st.executeQuery("show tables where Tables_in_login_db='login'");
             if (rs.next()) {
-                rs = st.executeQuery("select * from login where username='admin';");
+                rs = st.executeQuery("select * from login where role='Super Admin';");
                 if (rs.next()) {
                     role = getChecklogin();
                     tableDate.getCreatetableDate();
@@ -55,7 +55,7 @@ public class Login {
             } else {
                 st.executeUpdate("create table login (username varchar(25) primary key, password varchar(25), e_mail varchar(50), firstname varchar(20), lastname varchar(20), date DATE, role varchar(15));");
                 st.executeUpdate("insert into login (username,password,e_mail,firstname,lastname,date,role) values ('admin','password','panjapon@hotmail.com','panjapon','nasoun',now(),'Super Admin');");
-                getChecklogin();
+                role = getChecklogin();
                 tableDate.getCreatetableDate();
             }
 
