@@ -220,7 +220,7 @@
             });
         </script>
 
-        <%! String host = "10.69.4.11";
+        <%! String host = "localhost:3308";
             String password = "password";
         %>
     </head>
