@@ -182,8 +182,7 @@
             });
         </script> 
 
-
-        <script>
+        <Script>
             // drop table in database
             $(document).ready(function () {
                 $('#btn_drop_table').click(function () {
@@ -191,7 +190,9 @@
 
                 });
             });
+        </script>
 
+        <script>
             // check value if click save
             $(document).ready(function () {
                 $('#btn_accept_delete_table').click(function () {
@@ -207,10 +208,14 @@
                                     cancel.style.display = "none";
                                     document.getElementById('dialogSuccessfulDeleteTable').style.display = 'block';
                                 });
-                    }
+                }
                 });
             });
 
+
+        </script>
+
+        <script>
             // cancel btn
             $(document).ready(function () {
                 $('#btn_cancel_delete_table').click(function () {
@@ -220,7 +225,7 @@
             });
         </script>
 
-        <%! String host = "10.69.4.11";
+        <%! String host = "localhost:3308";
             String password = "password";
         %>
     </head>
