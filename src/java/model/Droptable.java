@@ -18,7 +18,7 @@ public class Droptable {
 
     private String tableName;
 
-    private static final String host = "localhost:3308";
+    private static final String host = "10.69.4.11";
     private static final String user_host = "root";
     private static final String pass_host = "password";
 
